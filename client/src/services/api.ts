@@ -1,0 +1,128 @@
+import axios from 'axios';
+import type { 
+  Cliente, Proveedor, Material, Presupuesto, Factura, Proyecto, Usuario, LoginCredentials 
+} from '../types';
+
+// Cliente HTTP configurado para la API del backend
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Interceptor para añadir token de autenticación
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Interceptor para manejar errores globalmente
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Servicios para cada entidad
+
+// --- Autenticación ---
+export const authService = {
+  login: (credentials: LoginCredentials) => 
+    api.post<{ token: string; usuario: Usuario }>('/auth/login', credentials),
+  register: (data: { nombre: string; email: string; password: string }) =>
+    api.post<{ success: boolean; message: string }>('/auth/register', data),
+  logout: () => {
+    localStorage.removeItem('token');
+  },
+};
+
+// --- Clientes ---
+export const clientesService = {
+  getAll: () => api.get<Cliente[]>('/clientes'),
+  getById: (id: string) => api.get<Cliente>(`/clientes/${id}`),
+  create: (data: Omit<Cliente, 'id' | 'createdAt'>) => 
+    api.post<Cliente>('/clientes', data),
+  update: (id: string, data: Partial<Cliente>) => 
+    api.put<Cliente>(`/clientes/${id}`, data),
+  delete: (id: string) => api.delete(`/clientes/${id}`),
+};
+
+// --- Proveedores ---
+export const proveedoresService = {
+  getAll: () => api.get<Proveedor[]>('/proveedores'),
+  getById: (id: string) => api.get<Proveedor>(`/proveedores/${id}`),
+  create: (data: Omit<Proveedor, 'id' | 'createdAt'>) => 
+    api.post<Proveedor>('/proveedores', data),
+  update: (id: string, data: Partial<Proveedor>) => 
+    api.put<Proveedor>(`/proveedores/${id}`, data),
+  delete: (id: string) => api.delete(`/proveedores/${id}`),
+};
+
+// --- Materiales ---
+export const materialesService = {
+  getAll: () => api.get<Material[]>('/materiales'),
+  getById: (id: string) => api.get<Material>(`/materiales/${id}`),
+  create: (data: Omit<Material, 'id' | 'createdAt'>) => 
+    api.post<Material>('/materiales', data),
+  update: (id: string, data: Partial<Material>) => 
+    api.put<Material>(`/materiales/${id}`, data),
+  delete: (id: string) => api.delete(`/materiales/${id}`),
+};
+
+// --- Presupuestos ---
+export const presupuestosService = {
+  getAll: () => api.get<Presupuesto[]>('/presupuestos'),
+  getById: (id: string) => api.get<Presupuesto>(`/presupuestos/${id}`),
+  create: (data: Omit<Presupuesto, 'id' | 'numero' | 'createdAt'>) => 
+    api.post<Presupuesto>('/presupuestos', data),
+  update: (id: string, data: Partial<Presupuesto>) => 
+    api.put<Presupuesto>(`/presupuestos/${id}`, data),
+  delete: (id: string) => api.delete(`/presupuestos/${id}`),
+  cambiarEstado: (id: string, estado: Presupuesto['estado']) => 
+    api.patch<Presupuesto>(`/presupuestos/${id}/estado`, { estado }),
+};
+
+// --- Facturas ---
+export const facturasService = {
+  getAll: () => api.get<Factura[]>('/facturas'),
+  getById: (id: string) => api.get<Factura>(`/facturas/${id}`),
+  create: (data: Omit<Factura, 'id' | 'numero' | 'createdAt'>) => 
+    api.post<Factura>('/facturas', data),
+  update: (id: string, data: Partial<Factura>) => 
+    api.put<Factura>(`/facturas/${id}`, data),
+  delete: (id: string) => api.delete(`/facturas/${id}`),
+  cambiarEstado: (id: string, estado: Factura['estado']) => 
+    api.patch<Factura>(`/facturas/${id}/estado`, { estado }),
+};
+
+// --- Proyectos ---
+export const proyectosService = {
+  getAll: () => api.get<Proyecto[]>('/proyectos'),
+  getById: (id: string) => api.get<Proyecto>(`/proyectos/${id}`),
+  create: (data: Omit<Proyecto, 'id' | 'createdAt'>) => 
+    api.post<Proyecto>('/proyectos', data),
+  update: (id: string, data: Partial<Proyecto>) => 
+    api.put<Proyecto>(`/proyectos/${id}`, data),
+  delete: (id: string) => api.delete(`/proyectos/${id}`),
+};
+
+// --- Dashboard / KPIs ---
+export const dashboardService = {
+  getKPIs: () => api.get('/dashboard/kpis'),
+  getMarketData: (year: number) => 
+    api.get<Array<{ mes: string; presupuestos: number; aceptados: number; facturacion: number; margen: number }>>(
+      `/dashboard/mercado?year=${year}`
+    ),
+};
+
+export default api;

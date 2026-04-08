@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base para la aplicación */
+@layer base {
+  body {
+    @apply text-gray-900 bg-gray-50;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+@layer components {
+  /* Clase reutilizable para contenedores de página */
+  .page-container {
+    @apply p-6 max-w-7xl mx-auto;
+  }
+  
+  /* Clase para tarjetas de contenido */
+  .card {
+    @apply bg-white rounded-lg shadow p-4;
+  }
+}
