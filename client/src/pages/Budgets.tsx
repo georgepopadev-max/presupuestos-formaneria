@@ -27,6 +27,7 @@ export default function Budgets() {
   // Form state for create/edit
   const [formData, setFormData] = useState({
     clienteId: '',
+    titulo: '',
     estado: 'borrador' as Presupuesto['estado'],
     fechaValidez: '',
   });
@@ -95,6 +96,7 @@ export default function Budgets() {
     setEditingBudget(enriched);
     setFormData({
       clienteId: enriched.clienteId || '',
+      titulo: enriched.titulo || '',
       estado: enriched.estado || 'borrador',
       fechaValidez: enriched.fechaValidez 
         ? new Date(enriched.fechaValidez).toISOString().split('T')[0]
@@ -132,17 +134,21 @@ export default function Budgets() {
     try {
       // Create a clone with new data (no id, no numero - backend generates)
       const cloneData = {
-        clienteId: budget.clienteId,
-        lineas: budget.lineas.map(l => ({
+        data: {
+          clienteId: budget.clienteId,
+          titulo: budget.titulo ? `${budget.titulo} (copia)` : 'Copia de presupuesto',
+          estado: 'borrador',
+          fechaValidez: budget.fechaValidez,
+        },
+        lineas: budget.lineas?.map((l: LineaPresupuesto) => ({
           descripcion: l.descripcion,
           cantidad: l.cantidad,
           precioUnitario: l.precioUnitario,
           importe: l.importe,
-        })),
-        fechaValidez: budget.fechaValidez,
+        })) || [],
       };
       
-      await presupuestosService.create(cloneData as any);
+      await presupuestosService.create(cloneData);
       await fetchData();
     } catch (err: any) {
       console.error('Error cloning:', err);
@@ -164,6 +170,7 @@ export default function Budgets() {
     defaultValidez.setDate(defaultValidez.getDate() + 30);
     setFormData({
       clienteId: '',
+      titulo: '',
       estado: 'borrador',
       fechaValidez: defaultValidez.toISOString().split('T')[0],
     });
@@ -180,7 +187,7 @@ export default function Budgets() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingBudget(null);
-    setFormData({ clienteId: '', estado: 'borrador', fechaValidez: '' });
+    setFormData({ clienteId: '', titulo: '', estado: 'borrador', fechaValidez: '' });
     setFormLineas([]);
   };
 
@@ -231,26 +238,26 @@ export default function Budgets() {
     
     try {
       const { subtotal, iva, total } = calculateTotals();
-      
-      const data = {
-        clienteId: formData.clienteId,
-        estado: formData.estado,
+
+      const payload = {
+        data: {
+          clienteId: Number(formData.clienteId),
+          titulo: formData.titulo || 'Presupuesto sin título',
+          estado: formData.estado,
+          fechaValidez: formData.fechaValidez ? new Date(formData.fechaValidez) : undefined,
+        },
         lineas: formLineas.map(l => ({
           descripcion: l.descripcion,
-          cantidad: l.cantidad,
-          precioUnitario: l.precioUnitario,
-          importe: l.importe,
+          cantidad: Number(l.cantidad),
+          precioUnitario: Number(l.precioUnitario),
+          importe: Number(l.importe),
         })),
-        subtotal,
-        iva,
-        total,
-        fechaValidez: formData.fechaValidez ? new Date(formData.fechaValidez) : undefined,
-      } as any;
+      };
 
       if (editingBudget?.id) {
-        await presupuestosService.update(editingBudget.id, data);
+        await presupuestosService.update(editingBudget.id, payload);
       } else {
-        await presupuestosService.create(data);
+        await presupuestosService.create(payload);
       }
 
       handleCloseModal();
@@ -323,6 +330,15 @@ export default function Budgets() {
         size="xl"
       >
         <form onSubmit={handleFormSubmit} className="space-y-6">
+          {/* Título */}
+          <Input
+            label="Título del presupuesto"
+            value={formData.titulo}
+            onChange={(e) => setFormData(prev => ({ ...prev, titulo: e.target.value }))}
+            placeholder="Ej: Reforma baño principal"
+            required
+          />
+
           {/* Cliente y Estado */}
           <div className="grid grid-cols-2 gap-4">
             <Select
