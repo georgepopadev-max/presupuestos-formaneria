@@ -9,11 +9,10 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Ejecutar migraciones completas con pg directo
 async function runMigrations() {
   const DATABASE_URL = process.env.DATABASE_URL;
   if (!DATABASE_URL) {
-    console.log('  No DATABASE_URL, saltando migraciones.');
+    console.log('⚠️  No DATABASE_URL, saltando migraciones.');
     return;
   }
 
@@ -22,11 +21,16 @@ async function runMigrations() {
     ssl: { rejectUnauthorized: false },
   });
 
+  const log = (msg: string) => console.log(`  🔧 ${msg}`);
+  const ok = (msg: string) => console.log(`  ✅ ${msg}`);
+  const err = (msg: string) => console.error(`  ❌ ${msg}`);
+
   try {
     await client.connect();
-    console.log('  Ejecutando migraciones...');
+    log('Conexión a PostgreSQL establecida');
 
     // Tabla usuarios
+    log('Creando tabla: usuarios');
     await client.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         id SERIAL PRIMARY KEY,
@@ -38,8 +42,10 @@ async function runMigrations() {
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('usuarios');
 
     // Tabla clientes
+    log('Creando tabla: clientes');
     await client.query(`
       CREATE TABLE IF NOT EXISTS clientes (
         id SERIAL PRIMARY KEY,
@@ -56,8 +62,10 @@ async function runMigrations() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('clientes');
 
     // Tabla proveedores
+    log('Creando tabla: proveedores');
     await client.query(`
       CREATE TABLE IF NOT EXISTS proveedores (
         id SERIAL PRIMARY KEY,
@@ -75,8 +83,10 @@ async function runMigrations() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('proveedores');
 
     // Tabla materiales
+    log('Creando tabla: materiales');
     await client.query(`
       CREATE TABLE IF NOT EXISTS materiales (
         id SERIAL PRIMARY KEY,
@@ -93,8 +103,34 @@ async function runMigrations() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('materiales');
 
-    // Tabla proyectos
+    // Tabla presupuestos (sin FK a proyectos aún - se añade después)
+    log('Creando tabla: presupuestos');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS presupuestos (
+        id SERIAL PRIMARY KEY,
+        numero VARCHAR(50) UNIQUE NOT NULL,
+        cliente_id INTEGER NOT NULL REFERENCES clientes(id) ON DELETE RESTRICT,
+        proyecto_id INTEGER,
+        titulo VARCHAR(255) NOT NULL,
+        descripcion TEXT,
+        estado VARCHAR(50) DEFAULT 'borrador',
+        subtotal DECIMAL(12,2) NOT NULL,
+        iva DECIMAL(12,2) NOT NULL,
+        total DECIMAL(12,2) NOT NULL,
+        fecha_validez DATE,
+        fecha_creacion DATE,
+        notas TEXT,
+        activo BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    ok('presupuestos');
+
+    // Tabla proyectos (después de presupuestos para poder referenciarla)
+    log('Creando tabla: proyectos');
     await client.query(`
       CREATE TABLE IF NOT EXISTS proyectos (
         id SERIAL PRIMARY KEY,
@@ -112,29 +148,26 @@ async function runMigrations() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('proyectos');
 
-    // Tabla presupuestos
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS presupuestos (
-        id SERIAL PRIMARY KEY,
-        numero VARCHAR(50) UNIQUE NOT NULL,
-        cliente_id INTEGER NOT NULL REFERENCES clientes(id) ON DELETE RESTRICT,
-        proyecto_id INTEGER REFERENCES proyectos(id) ON DELETE SET NULL,
-        titulo VARCHAR(255) NOT NULL,
-        descripcion TEXT,
-        estado VARCHAR(50) DEFAULT 'borrador',
-        subtotal DECIMAL(12,2) NOT NULL,
-        iva DECIMAL(12,2) NOT NULL,
-        total DECIMAL(12,2) NOT NULL,
-        fecha_validez DATE,
-        fecha_creacion DATE,
-        notas TEXT,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
-      );
-    `);
+    // Añadir FK de proyecto a presupuestos
+    log('Añadiendo FK: presupuestos.proyecto_id → proyectos.id');
+    try {
+      await client.query(`
+        ALTER TABLE presupuestos ADD CONSTRAINT fk_presupuestos_proyecto
+        FOREIGN KEY (proyecto_id) REFERENCES proyectos(id) ON DELETE SET NULL;
+      `);
+      ok('FK presupuestos.proyecto_id');
+    } catch (e: any) {
+      if (e.code === '42710' || e.code === '23505' || e.message.includes('already exists')) {
+        ok('FK presupuestos.proyecto_id (ya existía)');
+      } else {
+        err(`FK presupuesto_proyecto: ${e.message}`);
+      }
+    }
 
     // Tabla líneas de presupuesto
+    log('Creando tabla: presupuesto_lineas');
     await client.query(`
       CREATE TABLE IF NOT EXISTS presupuesto_lineas (
         id SERIAL PRIMARY KEY,
@@ -147,8 +180,10 @@ async function runMigrations() {
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('presupuesto_lineas');
 
     // Tabla facturas
+    log('Creando tabla: facturas');
     await client.query(`
       CREATE TABLE IF NOT EXISTS facturas (
         id SERIAL PRIMARY KEY,
@@ -166,42 +201,10 @@ async function runMigrations() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('facturas');
 
-    // Tabla precios mercado
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS precios_mercado (
-        id SERIAL PRIMARY KEY,
-        ano INTEGER,
-        trimestre INTEGER,
-        tipo_servicio VARCHAR(255),
-        precio_medio DECIMAL(12,2),
-        created_at TIMESTAMP DEFAULT NOW()
-      );
-    `);
-
-    // Tabla config
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS config (
-        id SERIAL PRIMARY KEY,
-        clave VARCHAR(255) UNIQUE NOT NULL,
-        valor TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
-      );
-    `);
-
-    // Tabla materiales pendientes
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS materiales_pendientes (
-        id SERIAL PRIMARY KEY,
-        proyecto_id INTEGER REFERENCES proyectos(id) ON DELETE CASCADE,
-        material_nombre VARCHAR(255),
-        cantidad DECIMAL(10,2),
-        estado VARCHAR(50) DEFAULT 'pendiente',
-        created_at TIMESTAMP DEFAULT NOW()
-      );
-    `);
-
-    // Tabla línea de facturas
+    // Tabla líneas de factura
+    log('Creando tabla: factura_lineas');
     await client.query(`
       CREATE TABLE IF NOT EXISTS factura_lineas (
         id SERIAL PRIMARY KEY,
@@ -213,8 +216,50 @@ async function runMigrations() {
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('factura_lineas');
 
-    // Tabla secuencias para números correlativos
+    // Tabla precios mercado
+    log('Creando tabla: precios_mercado');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS precios_mercado (
+        id SERIAL PRIMARY KEY,
+        ano INTEGER,
+        trimestre INTEGER,
+        tipo_servicio VARCHAR(255),
+        precio_medio DECIMAL(12,2),
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    ok('precios_mercado');
+
+    // Tabla config
+    log('Creando tabla: config');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS config (
+        id SERIAL PRIMARY KEY,
+        clave VARCHAR(255) UNIQUE NOT NULL,
+        valor TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    ok('config');
+
+    // Tabla materiales pendientes
+    log('Creando tabla: materiales_pendientes');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS materiales_pendientes (
+        id SERIAL PRIMARY KEY,
+        proyecto_id INTEGER REFERENCES proyectos(id) ON DELETE CASCADE,
+        material_nombre VARCHAR(255),
+        cantidad DECIMAL(10,2),
+        estado VARCHAR(50) DEFAULT 'pendiente',
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    ok('materiales_pendientes');
+
+    // Tabla secuencias
+    log('Creando tabla: secuencias');
     await client.query(`
       CREATE TABLE IF NOT EXISTS secuencias (
         id SERIAL PRIMARY KEY,
@@ -223,12 +268,18 @@ async function runMigrations() {
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
+    ok('secuencias');
+
+    // Seed secuencias
+    log('Insertando secuencias iniciales');
     await client.query(`
       INSERT INTO secuencias (clave, ultimo_numero) VALUES ('presupuesto', 0), ('factura', 0)
       ON CONFLICT (clave) DO NOTHING;
     `);
+    ok('secuencias seed');
 
-    // Crear usuario admin por defecto
+    // Crear usuario admin
+    log('Creando usuario admin');
     const bcrypt = await import('bcrypt');
     const hash = await bcrypt.hash('admin123', 10);
     await client.query(`
@@ -236,10 +287,12 @@ async function runMigrations() {
       VALUES ('admin@tuempresa.com', $1, 'Administrador', 'admin')
       ON CONFLICT (email) DO NOTHING;
     `, [hash]);
+    ok('usuario admin');
 
-    console.log('  Migraciones completadas.');
+    console.log('');
+    console.log('  🎉 Migraciones completadas sin errores.');
   } catch (err) {
-    console.error('  Error en migraciones:', err);
+    console.error('  ❌ Error en migraciones:', err);
   } finally {
     await client.end();
   }
