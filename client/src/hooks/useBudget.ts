@@ -36,7 +36,7 @@ export function useCreatePresupuesto() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (data: Omit<Presupuesto, 'id' | 'numero' | 'createdAt'>) => {
+    mutationFn: async (data: { data: any; lineas: any[] }) => {
       const response = await presupuestosService.create(data);
       return response.data;
     },
@@ -54,7 +54,7 @@ export function useUpdatePresupuesto() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<Presupuesto> }) => {
+    mutationFn: async ({ id, data }: { id: string; data: { data: any; lineas?: any[] } }) => {
       const response = await presupuestosService.update(id, data);
       return response.data;
     },
