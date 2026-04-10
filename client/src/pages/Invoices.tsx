@@ -151,7 +151,7 @@ export default function Invoices() {
   // Handler: download PDF
   const handleDownloadPDF = (factura: Factura) => {
     if (!factura.id) return;
-    const apiUrl = (import.meta as unknown as { env: { VITE_API_URL?: string } }).env.VITE_API_URL || 'http://localhost:4000/api';
+    const apiUrl = ((import.meta as unknown as { env: { VITE_API_URL?: string } }).env.VITE_API_URL || 'http://localhost:4000') + '/api';
     window.open(`${apiUrl}/facturas/${factura.id}/pdf`, '_blank');
   };
 
