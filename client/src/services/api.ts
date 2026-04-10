@@ -83,13 +83,15 @@ export const materialesService = {
 export const presupuestosService = {
   getAll: () => api.get<Presupuesto[]>('/presupuestos'),
   getById: (id: string) => api.get<Presupuesto>(`/presupuestos/${id}`),
-  create: (data: Omit<Presupuesto, 'id' | 'numero' | 'createdAt'>) => 
+  create: (data: { data: any; lineas: any[] }) =>
     api.post<Presupuesto>('/presupuestos', data),
-  update: (id: string, data: Partial<Presupuesto>) => 
+  update: (id: string, data: { data: any; lineas?: any[] }) =>
     api.put<Presupuesto>(`/presupuestos/${id}`, data),
   delete: (id: string) => api.delete(`/presupuestos/${id}`),
-  cambiarEstado: (id: string, estado: Presupuesto['estado']) => 
+  cambiarEstado: (id: string, estado: Presupuesto['estado']) =>
     api.patch<Presupuesto>(`/presupuestos/${id}/estado`, { estado }),
+  generateInvoice: (id: string) =>
+    api.post<any>(`/presupuestos/${id}/facturar`),
 };
 
 // --- Facturas ---

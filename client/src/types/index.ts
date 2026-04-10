@@ -40,6 +40,7 @@ export interface LineaPresupuesto {
   precioUnitario: number;
   importe: number;
   materialId?: string;
+  tipoIva?: string;
 }
 
 export interface Presupuesto {
@@ -47,6 +48,7 @@ export interface Presupuesto {
   numero: string;
   clienteId: string;
   cliente?: Cliente;
+  titulo?: string;
   lineas: LineaPresupuesto[];
   subtotal: number;
   iva: number;

@@ -139,12 +139,16 @@ export default function Budgets() {
           titulo: budget.titulo ? `${budget.titulo} (copia)` : 'Copia de presupuesto',
           estado: 'borrador',
           fechaValidez: budget.fechaValidez,
+          subtotal: budget.subtotal,
+          iva: budget.iva,
+          total: budget.total,
         },
         lineas: budget.lineas?.map((l: LineaPresupuesto) => ({
           descripcion: l.descripcion,
           cantidad: l.cantidad,
           precioUnitario: l.precioUnitario,
           importe: l.importe,
+          tipoIva: l.tipoIva || 'general',
         })) || [],
       };
       
@@ -163,9 +167,7 @@ export default function Budgets() {
         await presupuestosService.cambiarEstado(budget.id, 'aceptado');
       }
       // Generar la factura desde el presupuesto
-      const response = await api.post<{ success: boolean; data: any; message: string }>(
-        `/presupuestos/${budget.id}/facturar`
-      );
+      const response = await presupuestosService.generateInvoice(budget.id);
       alert(`Factura generada correctamente: ${response.data.data?.numero || 'OK'}`);
       await fetchData();
     } catch (err: any) {
@@ -257,12 +259,16 @@ export default function Budgets() {
           titulo: formData.titulo || 'Presupuesto sin título',
           estado: formData.estado,
           fechaValidez: formData.fechaValidez ? new Date(formData.fechaValidez) : undefined,
+          subtotal,
+          iva,
+          total,
         },
         lineas: formLineas.map(l => ({
           descripcion: l.descripcion,
           cantidad: Number(l.cantidad),
           precioUnitario: Number(l.precioUnitario),
           importe: Number(l.importe),
+          tipoIva: 'general',
         })),
       };
 
