@@ -177,6 +177,8 @@ async function runMigrations() {
         cantidad DECIMAL(10,3) NOT NULL,
         precio_unitario DECIMAL(10,2) NOT NULL,
         importe DECIMAL(12,2) NOT NULL,
+        tipo_iva VARCHAR(20) DEFAULT 'general',
+        orden INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
@@ -213,6 +215,8 @@ async function runMigrations() {
         cantidad DECIMAL(10,3) NOT NULL,
         precio_unitario DECIMAL(10,2) NOT NULL,
         importe DECIMAL(12,2) NOT NULL,
+        tipo_iva VARCHAR(20) DEFAULT 'general',
+        orden INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);

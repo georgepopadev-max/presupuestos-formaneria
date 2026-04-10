@@ -156,10 +156,22 @@ export default function Budgets() {
     }
   };
 
-  const handleGenerateInvoice = (budget: Presupuesto) => {
-    // TODO: Open invoice creation pre-filled with budget data
-    console.log('Generar factura para presupuesto:', budget.numero);
-    alert('Función de generar factura pendiente de implementar.\nPresupuesto: ' + budget.numero);
+  const handleGenerateInvoice = async (budget: Presupuesto) => {
+    try {
+      // Si el presupuesto no está aceptado, primero aceptarlo
+      if (budget.estado !== 'aceptado') {
+        await presupuestosService.cambiarEstado(budget.id, 'aceptado');
+      }
+      // Generar la factura desde el presupuesto
+      const response = await api.post<{ success: boolean; data: any; message: string }>(
+        `/presupuestos/${budget.id}/facturar`
+      );
+      alert(`Factura generada correctamente: ${response.data.data?.numero || 'OK'}`);
+      await fetchData();
+    } catch (err: any) {
+      console.error('Error generando factura:', err);
+      alert(err.response?.data?.message || 'Error al generar la factura');
+    }
   };
 
   // Form handlers
