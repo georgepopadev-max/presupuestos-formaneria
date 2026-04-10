@@ -1,13 +1,14 @@
+import { Fragment } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 
 export function Layout() {
   return (
-    <div className="flex">
+    <Fragment>
       <Sidebar />
       <main className="flex-1 min-h-screen bg-gray-50">
         <Outlet />
       </main>
-    </div>
+    </Fragment>
   );
 }
