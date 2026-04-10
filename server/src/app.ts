@@ -18,6 +18,7 @@ import siiRoutes from './routes/sii.routes';
 import configRoutes from './routes/config.routes';
 import materialesPendientesRoutes from './routes/materialesPendientes.routes';
 import authRoutes from './routes/auth.routes';
+import adminRoutes from './routes/admin.routes';
 
 // Importar middleware de errores
 import { errorHandler } from './middleware/errorHandler';
@@ -49,6 +50,7 @@ app.use('/api/sii', siiRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/materiales-pendientes', materialesPendientesRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Middleware para rutas no encontradas (404)
 app.use(notFoundHandler);
