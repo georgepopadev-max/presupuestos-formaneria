@@ -75,4 +75,26 @@ router.post('/create-tables', async (_req: Request, res: Response) => {
   }
 });
 
+// POST /api/admin/run-sql
+router.post('/run-sql', async (req: Request, res: Response) => {
+  if (!DATABASE_URL) {
+    res.status(500).json({ success: false, message: 'No DATABASE_URL' });
+    return;
+  }
+  const { sql } = req.body;
+  if (!sql) {
+    res.status(400).json({ success: false, message: 'sql required' });
+    return;
+  }
+  const client = await getClient();
+  try {
+    const result = await client.query(sql);
+    res.json({ success: true, rowCount: result.rowCount, rows: result.rows });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  } finally {
+    await client.end();
+  }
+});
+
 export default router;
