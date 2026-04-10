@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "https://presupuestos-formaneria-server.up.railway.app/api"
+    }
+  ]
+}
