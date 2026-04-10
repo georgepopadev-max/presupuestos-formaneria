@@ -57,6 +57,8 @@ router.post('/create-tables', async (_req: Request, res: Response) => {
     await client.query(`CREATE TABLE IF NOT EXISTS precios_mercado (id SERIAL PRIMARY KEY, ano INTEGER, trimestre INTEGER, tipo_servicio VARCHAR(255), precio_medio DECIMAL(12,2), created_at TIMESTAMP DEFAULT NOW());`);
     await client.query(`CREATE TABLE IF NOT EXISTS config (id SERIAL PRIMARY KEY, clave VARCHAR(255) UNIQUE NOT NULL, valor TEXT, created_at TIMESTAMP DEFAULT NOW());`);
     await client.query(`CREATE TABLE IF NOT EXISTS materiales_pendientes (id SERIAL PRIMARY KEY, proyecto_id INTEGER REFERENCES proyectos(id) ON DELETE CASCADE, material_nombre VARCHAR(255), cantidad DECIMAL(10,2), estado VARCHAR(50) DEFAULT 'pendiente', created_at TIMESTAMP DEFAULT NOW());`);
+    await client.query(`CREATE TABLE IF NOT EXISTS secuencias (id SERIAL PRIMARY KEY, clave VARCHAR(100) UNIQUE NOT NULL, ultimo_numero INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT NOW());`);
+    await client.query(`INSERT INTO secuencias (clave, ultimo_numero) VALUES ('presupuesto', 0), ('factura', 0) ON CONFLICT (clave) DO NOTHING;`);
 
     // Seed admin user
     const bcrypt = await import('bcrypt');
