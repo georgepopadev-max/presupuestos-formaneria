@@ -30,7 +30,19 @@ const app: Application = express();
 // Middlewares de seguridad y configuración
 app.use(helmet()); // Seguridad con headers HTTP
 app.use(cors({
-  origin: ['https://presupuestos-formaneria.vercel.app', 'http://localhost:4000'],
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    // Allow any Vercel deployment for presupuestos-formaneria
+    if (/^https:\/\/presupuestos-formaneria.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/presupuestos-formaneria.*-vercel\.app$/.test(origin) ||
+        /^https:\/\/.+\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    // Allow localhost for development
+    if (origin === 'http://localhost:4000') return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
