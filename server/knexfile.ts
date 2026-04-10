@@ -3,12 +3,10 @@
 // Sistema de gestión de presupuestos y facturas para fontanería
 // ============================================================
 
-import type { Knex } from 'knex';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-const config: Knex.Config = {
+const config = {
   client: 'pg',
   connection: process.env.DATABASE_URL
     ? (process.env.DATABASE_URL.includes('?') ? process.env.DATABASE_URL : process.env.DATABASE_URL + '?sslmode=require')
