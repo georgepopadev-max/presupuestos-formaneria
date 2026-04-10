@@ -172,7 +172,7 @@ async function runMigrations() {
       CREATE TABLE IF NOT EXISTS presupuesto_lineas (
         id SERIAL PRIMARY KEY,
         presupuesto_id INTEGER NOT NULL REFERENCES presupuestos(id) ON DELETE CASCADE,
-        material_id INTEGER REFERENCES materiales(id) ON DELETE SET NULL,
+        material_id INTEGER,
         descripcion VARCHAR(500) NOT NULL,
         cantidad DECIMAL(10,3) NOT NULL,
         precio_unitario DECIMAL(10,2) NOT NULL,
@@ -190,12 +190,16 @@ async function runMigrations() {
       CREATE TABLE IF NOT EXISTS facturas (
         id SERIAL PRIMARY KEY,
         numero VARCHAR(50) UNIQUE NOT NULL,
+        serie VARCHAR(20) DEFAULT 'F1',
         presupuesto_id INTEGER REFERENCES presupuestos(id) ON DELETE SET NULL,
+        proyecto_id INTEGER,
         cliente_id INTEGER REFERENCES clientes(id) ON DELETE SET NULL,
-        estado VARCHAR(50) DEFAULT 'pendiente',
+        estado VARCHAR(50) DEFAULT 'borrador',
         fecha_emision DATE DEFAULT CURRENT_DATE,
         fecha_vencimiento DATE,
-        importe DECIMAL(12,2) DEFAULT 0,
+        subtotal DECIMAL(12,2) NOT NULL DEFAULT 0,
+        iva DECIMAL(12,2) NOT NULL DEFAULT 0,
+        total DECIMAL(12,2) NOT NULL DEFAULT 0,
         importe_pagado DECIMAL(12,2) DEFAULT 0,
         metodo_pago VARCHAR(50),
         observaciones TEXT,
@@ -205,12 +209,28 @@ async function runMigrations() {
     `);
     ok('facturas');
 
+    // Añadir FK proyecto si no existe
+    try {
+      await client.query(`
+        ALTER TABLE facturas ADD CONSTRAINT fk_facturas_proyecto
+        FOREIGN KEY (proyecto_id) REFERENCES proyectos(id) ON DELETE SET NULL;
+      `);
+      ok('FK facturas.proyecto_id');
+    } catch (e: any) {
+      if (e.code === '42710' || e.code === '23505' || e.message.includes('already exists')) {
+        ok('FK facturas.proyecto_id (ya existía)');
+      } else {
+        err(`FK facturas_proyecto: ${e.message}`);
+      }
+    }
+
     // Tabla líneas de factura
     log('Creando tabla: factura_lineas');
     await client.query(`
       CREATE TABLE IF NOT EXISTS factura_lineas (
         id SERIAL PRIMARY KEY,
         factura_id INTEGER NOT NULL REFERENCES facturas(id) ON DELETE CASCADE,
+        material_id INTEGER,
         descripcion VARCHAR(500) NOT NULL,
         cantidad DECIMAL(10,3) NOT NULL,
         precio_unitario DECIMAL(10,2) NOT NULL,
