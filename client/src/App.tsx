@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { Layout } from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Budgets from './pages/Budgets';
 import Invoices from './pages/Invoices';
@@ -22,16 +23,16 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="min-h-screen bg-gray-50">
-          <Routes>
-            {/* Rutas públicas */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            
-            {/* Redirección raíz al dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            
-            {/* Rutas protegidas */}
+        <Routes>
+          {/* Rutas públicas */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Redirección raíz al dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+          {/* Rutas protegidas con layout */}
+          <Route element={<Layout />}>
             <Route
               path="/dashboard"
               element={
@@ -57,22 +58,6 @@ function App() {
               }
             />
             <Route
-              path="/materiales"
-              element={
-                <ProtectedRoute>
-                  <Materials />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/proyectos"
-              element={
-                <ProtectedRoute>
-                  <Projects />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/clientes"
               element={
                 <ProtectedRoute>
@@ -85,6 +70,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Suppliers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/materiales"
+              element={
+                <ProtectedRoute>
+                  <Materials />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/proyectos"
+              element={
+                <ProtectedRoute>
+                  <Projects />
                 </ProtectedRoute>
               }
             />
@@ -112,8 +113,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
-          </Routes>
-        </div>
+          </Route>
+        </Routes>
       </BrowserRouter>
     </AuthProvider>
   );
