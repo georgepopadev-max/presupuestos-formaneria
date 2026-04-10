@@ -29,7 +29,12 @@ const app: Application = express();
 
 // Middlewares de seguridad y configuración
 app.use(helmet()); // Seguridad con headers HTTP
-app.use(cors()); // Habilitar CORS
+app.use(cors({
+  origin: ['https://presupuestos-formaneria.vercel.app', 'http://localhost:4000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+})); // Habilitar CORS
 app.use(express.json()); // Parsear bodies JSON
 app.use(express.urlencoded({ extended: true })); // Parsear bodies URL-encoded
 
