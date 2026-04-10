@@ -1,7 +1,7 @@
 import app from './app';
 import dotenv from 'dotenv';
 import knex from 'knex';
-import config from '../../knexfile';
+import config from '../knexfile';
 
 // Cargar variables de entorno
 dotenv.config();
