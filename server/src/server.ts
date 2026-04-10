@@ -1,5 +1,6 @@
 import app from './app';
 import dotenv from 'dotenv';
+// @ts-ignore
 import pg from 'pg';
 
 // Cargar variables de entorno
