@@ -2,7 +2,7 @@
   "name": "presupuestos-fontaneria-server",
   "version": "1.0.0",
   "description": "Sistema de gestión de presupuestos y facturas para fontanería",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
