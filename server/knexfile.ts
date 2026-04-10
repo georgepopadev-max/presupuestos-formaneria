@@ -10,12 +10,15 @@ dotenv.config();
 
 const config: Knex.Config = {
   client: 'pg',
-  connection: process.env.DATABASE_URL || {
+  connection: process.env.DATABASE_URL
+    ? (process.env.DATABASE_URL.includes('?') ? process.env.DATABASE_URL : process.env.DATABASE_URL + '?sslmode=require')
+    : {
     host: 'localhost',
     port: 5432,
     database: 'presupuestos_fontaneria',
     user: 'postgres',
     password: '',
+    ssl: { rejectUnauthorized: false },
   },
   pool: {
     min: 2,
