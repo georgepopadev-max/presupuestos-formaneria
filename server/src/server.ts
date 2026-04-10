@@ -214,6 +214,20 @@ async function runMigrations() {
       );
     `);
 
+    // Tabla secuencias para números correlativos
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS secuencias (
+        id SERIAL PRIMARY KEY,
+        clave VARCHAR(100) UNIQUE NOT NULL,
+        ultimo_numero INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    await client.query(`
+      INSERT INTO secuencias (clave, ultimo_numero) VALUES ('presupuesto', 0), ('factura', 0)
+      ON CONFLICT (clave) DO NOTHING;
+    `);
+
     // Crear usuario admin por defecto
     const bcrypt = await import('bcrypt');
     const hash = await bcrypt.hash('admin123', 10);
