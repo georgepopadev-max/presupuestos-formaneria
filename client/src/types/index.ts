@@ -9,7 +9,7 @@ export interface Cliente {
   telefono?: string;
   email?: string;
   ciudad?: string;
-  codigoPostal?: string;
+  codigo_postal?: string;
   observaciones?: string;
   activo?: boolean;
   createdAt: Date;
@@ -19,9 +19,14 @@ export interface Proveedor {
   id: string;
   nombre: string;
   cif: string;
-  direccion: string;
-  telefono: string;
-  email: string;
+  direccion?: string;
+  telefono?: string;
+  email?: string;
+  ciudad?: string;
+  codigo_postal?: string;
+  persona_contacto?: string;
+  observaciones?: string;
+  activo?: boolean;
   materiales: string[];
   createdAt: Date;
 }
@@ -31,11 +36,11 @@ export interface Material {
   nombre: string;
   descripcion?: string;
   categoria?: string;
-  unidadMedida: string;
-  precioUnitario: number;
-  proveedorId?: string;
+  unidad_medida: string;
+  precio_unitario: number;
+  proveedor_id?: string;
   stock?: number;
-  stockMinimo?: number;
+  stock_minimo?: number;
   activo?: boolean;
   createdAt: Date;
 }

@@ -22,7 +22,7 @@ const clienteSchema = Joi.object({
   email: Joi.string().email().max(255),
   direccion: Joi.string().max(500),
   ciudad: Joi.string().max(100),
-  codigoPostal: Joi.string().max(10),
+  codigo_postal: Joi.string().max(10),
   nif: Joi.string().max(20),
   observaciones: Joi.string().max(1000),
   activo: Joi.boolean(),

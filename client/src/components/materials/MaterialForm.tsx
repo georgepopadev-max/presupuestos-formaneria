@@ -18,9 +18,9 @@ interface MaterialFormProps {
 export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel }: MaterialFormProps) {
   const [nombre, setNombre] = useState(initialData?.nombre || '');
   const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
-  const [precioUnitario, setPrecioUnitario] = useState(initialData?.precioUnitario || 0);
-  const [unidadMedida, setUnidadMedida] = useState(initialData?.unidadMedida || 'ud');
-  const [proveedorId, setProveedorId] = useState(initialData?.proveedorId || '');
+  const [precioUnitario, setPrecioUnitario] = useState(initialData?.precio_unitario || 0);
+  const [unidadMedida, setUnidadMedida] = useState(initialData?.unidad_medida || 'ud');
+  const [proveedorId, setProveedorId] = useState(initialData?.proveedor_id || '');
   const [stock, setStock] = useState(initialData?.stock || 0);
 
   // Unidades comunes
@@ -38,9 +38,9 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
     onSubmit({
       nombre,
       descripcion,
-      precioUnitario,
-      unidadMedida,
-      proveedorId: proveedorId || undefined,
+      precio_unitario: precioUnitario,
+      unidad_medida: unidadMedida,
+      proveedor_id: proveedorId || undefined,
       stock,
     });
   };

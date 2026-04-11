@@ -31,9 +31,9 @@ export function MaterialCard({ material, onClick, onEdit, onDelete, showStock = 
         </div>
         <div className="text-right">
           <p className="text-xl font-bold text-blue-600">
-            {formatCurrency(material.precioUnitario)}
+            {formatCurrency(material.precio_unitario)}
           </p>
-          <p className="text-sm text-gray-500">por {material.unidadMedida}</p>
+          <p className="text-sm text-gray-500">por {material.unidad_medida}</p>
         </div>
       </div>
 
@@ -42,7 +42,7 @@ export function MaterialCard({ material, onClick, onEdit, onDelete, showStock = 
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-500">Stock disponible:</span>
             <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-gray-900'}`}>
-              {material.stock ?? 0} {material.unidadMedida}
+              {material.stock ?? 0} {material.unidad_medida}
             </span>
           </div>
           {isLowStock && (
