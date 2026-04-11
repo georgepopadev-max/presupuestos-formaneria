@@ -32,15 +32,15 @@ api.interceptors.response.use(
   (response) => {
     console.log('🔵 Response:', response.config.url, response.status, typeof response.data);
 
-    if (response.config.url?.includes('/api/') && response.status === 200) {
+    if (response.status === 200) {
       const isEmptyData = response.data === null || response.data === undefined || response.data === '';
       
       if (isEmptyData) {
         console.warn('Respuesta vacía para:', response.config.url, '- normalizando');
         const url = response.config.url;
-        if (url.includes('/presupuestos') || url.includes('/clientes') ||
-            url.includes('/facturas') || url.includes('/proveedores') ||
-            url.includes('/materiales') || url.includes('/proyectos')) {
+        if (url?.includes('/presupuestos') || url?.includes('/clientes') ||
+            url?.includes('/facturas') || url?.includes('/proveedores') ||
+            url?.includes('/materiales') || url?.includes('/proyectos')) {
           response.data = [];
         } else {
           response.data = {};
@@ -51,9 +51,9 @@ api.interceptors.response.use(
         if (wrapper.data === null || wrapper.data === undefined) {
           console.warn('Wrapper.data es null/undefined para:', response.config.url, '- normalizando');
           const url = response.config.url;
-          if (url.includes('/presupuestos') || url.includes('/clientes') ||
-              url.includes('/facturas') || url.includes('/proveedores') ||
-              url.includes('/materiales') || url.includes('/proyectos')) {
+          if (url?.includes('/presupuestos') || url?.includes('/clientes') ||
+              url?.includes('/facturas') || url?.includes('/proveedores') ||
+              url?.includes('/materiales') || url?.includes('/proyectos')) {
             response.data = [];
           } else {
             response.data = {};
