@@ -48,7 +48,7 @@ export function InvoiceDetail({
         <div>
           <p className="text-sm text-gray-500">Cliente</p>
           <p className="font-medium">{factura.cliente?.nombre}</p>
-          <p className="text-sm text-gray-600">{factura.cliente?.cif}</p>
+          <p className="text-sm text-gray-600">{factura.cliente?.nif}</p>
         </div>
         <div>
           <p className="text-sm text-gray-500">Fecha de emisión</p>
