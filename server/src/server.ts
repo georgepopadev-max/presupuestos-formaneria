@@ -211,6 +211,15 @@ async function runMigrations() {
 
     // Añadir FK proyecto si no existe
     try {
+      // Primero verificar que la columna proyecto_id existe en facturas
+      const colCheck = await client.query(`
+        SELECT column_name FROM information_schema.columns
+        WHERE table_name = 'facturas' AND column_name = 'proyecto_id';
+      `);
+      if (colCheck.rows.length === 0) {
+        // La columna no existe, añadirla primero
+        await client.query(`ALTER TABLE facturas ADD COLUMN proyecto_id INTEGER;`);
+      }
       await client.query(`
         ALTER TABLE facturas ADD CONSTRAINT fk_facturas_proyecto
         FOREIGN KEY (proyecto_id) REFERENCES proyectos(id) ON DELETE SET NULL;
@@ -219,6 +228,8 @@ async function runMigrations() {
     } catch (e: any) {
       if (e.code === '42710' || e.code === '23505' || e.message.includes('already exists')) {
         ok('FK facturas.proyecto_id (ya existía)');
+      } else if (e.message.includes('does not exist')) {
+        err(`FK facturas_proyecto: columna proyecto_id no existe - saltando FK`);
       } else {
         err(`FK facturas_proyecto: ${e.message}`);
       }
