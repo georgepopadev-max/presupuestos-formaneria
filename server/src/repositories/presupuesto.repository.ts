@@ -14,7 +14,7 @@ export class PresupuestoRepository {
    * Obtener todos los presupuestos
    */
   async findAll(): Promise<Presupuesto[]> {
-    return db('presupuestos').where('activo', true).orderBy('fecha_creacion', 'desc');
+    return db('presupuestos').where('activo', true).orderBy('created_at', 'desc');
   }
 
   /**

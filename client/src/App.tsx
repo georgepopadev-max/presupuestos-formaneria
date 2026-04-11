@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import Dashboard from './pages/Dashboard';
 import Budgets from './pages/Budgets';
 import Invoices from './pages/Invoices';
@@ -21,9 +22,10 @@ import Register from './pages/Register';
  */
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
           {/* Rutas públicas */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -117,6 +119,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

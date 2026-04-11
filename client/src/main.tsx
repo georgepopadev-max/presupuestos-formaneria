@@ -11,6 +11,9 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutos
       retry: 1,
+      // Desactivar soporte ETag/Conditional GET que puede causar 304
+      refetchOnWindowFocus: false,
+      notifyOnChangeProps: 'all',
     },
   },
 });

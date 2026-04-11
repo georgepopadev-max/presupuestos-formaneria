@@ -26,10 +26,30 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Manejar respuestas 304 Not Modified - no es un error real
+    if (error.response?.status === 304) {
+      // Devolver una respuesta "vacía" con datos nulos para no romper las queries
+      return Promise.resolve({ ...error.response, data: null });
+    }
+
+    // Manejar errores de autenticación
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
+      return Promise.reject(error);
     }
+
+    // Manejar errores 500 - loguear para debug
+    if (error.response?.status === 500) {
+      console.error('Error 500 del servidor:', error.response?.data?.message || 'Error interno', error.response?.data);
+    }
+
+    // Manejar errores 4xx de forma general
+    if (error.response?.status >= 400 && error.response?.status < 500) {
+      const message = error.response?.data?.message || `Error ${error.response?.status}`;
+      console.warn(`API Error ${error.response?.status}:`, message);
+    }
+
     return Promise.reject(error);
   }
 );
