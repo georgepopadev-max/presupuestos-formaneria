@@ -52,13 +52,14 @@ export default function MarketAnalysis() {
         let marketDataResp = await dashboardService.getMarketData(currentYear);
         
         // Transformar datos del backend al formato esperado
-        const backendData = (marketDataResp.data as unknown) as Array<{
+        const rawData = marketDataResp.data;
+        const backendData = Array.isArray(rawData) ? rawData as Array<{
           mes: string;
           presupuestosCreados: number;
           presupuestosAceptados: number;
           facturacionTotal: number;
           margenPromedio: number;
-        }>;
+        }> : [];
         
         const transformedData: MonthlyStats[] = MESES.map((mes, index) => {
           const monthNum = index + 1;
@@ -123,7 +124,7 @@ export default function MarketAnalysis() {
     try {
       // Obtener todos los materiales
       const materialesRes = await materialesService.getAll();
-      const materiales = materialesRes.data;
+      const materiales = Array.isArray(materialesRes.data) ? materialesRes.data : [];
 
       // Precios de mercado simulados (en producción vendrían de un servicio externo)
       const preciosMercado: Record<string, number> = {

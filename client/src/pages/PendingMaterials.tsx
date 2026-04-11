@@ -26,8 +26,10 @@ export default function PendingMaterials() {
   const fetchPresupuestosAceptados = async () => {
     try {
       const res = await api.get('/presupuestos');
-      if (res.data.success) {
-        const aceptados = res.data.data.filter((p: any) => p.estado === 'aceptado');
+      const data = res.data;
+      const presupuestosArray = data?.success ? data.data : data;
+      if (Array.isArray(presupuestosArray)) {
+        const aceptados = presupuestosArray.filter((p: any) => p.estado === 'aceptado');
         setPresupuestos(aceptados);
       }
     } catch (err) {
@@ -40,9 +42,9 @@ export default function PendingMaterials() {
   const fetchPendientes = async (presupuestoId: number) => {
     try {
       const res = await api.get(`/materiales-pendientes/presupuesto/${presupuestoId}`);
-      if (res.data.success) {
-        setPendientes(res.data.data);
-      }
+      const data = res.data;
+      const pendientesArray = data?.success ? data.data : data;
+      setPendientes(Array.isArray(pendientesArray) ? pendientesArray : []);
     } catch (err) {
       console.error('Error fetching pendientes', err);
     }
@@ -51,9 +53,9 @@ export default function PendingMaterials() {
   const fetchResumen = async () => {
     try {
       const res = await api.get('/materiales-pendientes/resumen/proveedor');
-      if (res.data.success) {
-        setResumen(res.data.data);
-      }
+      const data = res.data;
+      const resumenArray = data?.success ? data.data : data;
+      setResumen(Array.isArray(resumenArray) ? resumenArray : []);
     } catch (err) {
       console.error('Error fetching resumen', err);
     }

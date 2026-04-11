@@ -29,8 +29,8 @@ export default function Invoices() {
       clientesService.getAll(),
     ])
       .then(([facturasRes, clientesRes]) => {
-        setFacturas(facturasRes.data);
-        setClientes(clientesRes.data);
+        setFacturas(Array.isArray(facturasRes.data) ? facturasRes.data : []);
+        setClientes(Array.isArray(clientesRes.data) ? clientesRes.data : []);
         setLoading(false);
       })
       .catch((err) => {
@@ -43,7 +43,7 @@ export default function Invoices() {
   // Refresh facturas list
   const refreshFacturas = () => {
     facturasService.getAll()
-      .then((res) => setFacturas(res.data))
+      .then((res) => setFacturas(Array.isArray(res.data) ? res.data : []))
       .catch((err) => {
         console.error('Error refreshing facturas:', err);
       });

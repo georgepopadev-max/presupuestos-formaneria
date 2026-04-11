@@ -28,7 +28,7 @@ export default function Clients() {
       setLoading(true);
       setError(null);
       const response = await clientesService.getAll();
-      setClientes(response.data);
+      setClientes(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('Error al cargar clientes:', err);
       setError('Error al cargar la lista de clientes');

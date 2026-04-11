@@ -16,6 +16,8 @@ interface MarginChartProps {
  * Usa Recharts para mostrar tendencias
  */
 export function MarginChart({ data, showFacturation = true }: MarginChartProps) {
+  const safeData = Array.isArray(data) ? data : [];
+  
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -23,7 +25,7 @@ export function MarginChart({ data, showFacturation = true }: MarginChartProps) 
       </h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <LineChart data={safeData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis 
               dataKey="mes" 

@@ -51,9 +51,9 @@ export default function Dashboard() {
           clientesService.getAll(),
         ]);
 
-        const presupuestos: Presupuesto[] = presupuestosRes.data;
-        const facturas: Factura[] = facturasRes.data;
-        const clientes: Cliente[] = clientesRes.data;
+        const presupuestos: Presupuesto[] = Array.isArray(presupuestosRes.data) ? presupuestosRes.data : [];
+        const facturas: Factura[] = Array.isArray(facturasRes.data) ? facturasRes.data : [];
+        const clientes: Cliente[] = Array.isArray(clientesRes.data) ? clientesRes.data : [];
 
         // Calculate KPIs
         const currentYear = new Date().getFullYear();

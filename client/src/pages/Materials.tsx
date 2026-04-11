@@ -28,7 +28,7 @@ export default function Materials() {
       setLoading(true);
       setError(null);
       const response = await materialesService.getAll();
-      setMateriales(response.data);
+      setMateriales(Array.isArray(response.data) ? response.data : []);
     } catch (err: any) {
       console.error('Error cargando materiales:', err);
       setError(err.response?.data?.message || 'Error al cargar los materiales');

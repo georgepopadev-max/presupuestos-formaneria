@@ -37,7 +37,8 @@ export function RecentActivity({ activities, maxItems = 5 }: RecentActivityProps
     material: 'Material',
   };
 
-  const displayedActivities = activities.slice(0, maxItems);
+  const safeActivities = Array.isArray(activities) ? activities : [];
+  const displayedActivities = safeActivities.slice(0, maxItems);
 
   return (
     <Card title="Actividad reciente" subtitle="Últimas acciones en el sistema">
