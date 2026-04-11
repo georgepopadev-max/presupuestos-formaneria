@@ -53,7 +53,7 @@ export default function MarketAnalysis() {
         
         // Transformar datos del backend al formato esperado
         const rawData = marketDataResp.data;
-        const backendData = Array.isArray(rawData) ? rawData as Array<{
+        const backendData = Array.isArray(rawData) ? rawData as unknown as Array<{
           mes: string;
           presupuestosCreados: number;
           presupuestosAceptados: number;
