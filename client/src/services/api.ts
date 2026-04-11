@@ -31,9 +31,6 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Guardar la respuesta original por si我们需要 usarla
-    const originalResponse = error.response;
-
     // Manejar errores de autenticación
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
