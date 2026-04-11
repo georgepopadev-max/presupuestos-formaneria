@@ -21,7 +21,7 @@ export function ClientList({ clientes, onView, onEdit, onDelete }: ClientListPro
       render: (row: Cliente) => (
         <div>
           <p className="font-medium">{row.nombre}</p>
-          <p className="text-sm text-gray-500">{row.cif}</p>
+          <p className="text-sm text-gray-500">{row.nif}</p>
         </div>
       ),
     },

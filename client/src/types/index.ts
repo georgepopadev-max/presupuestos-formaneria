@@ -4,10 +4,14 @@
 export interface Cliente {
   id: string;
   nombre: string;
-  cif: string;
-  direccion: string;
-  telefono: string;
-  email: string;
+  nif?: string;
+  direccion?: string;
+  telefono?: string;
+  email?: string;
+  ciudad?: string;
+  codigoPostal?: string;
+  observaciones?: string;
+  activo?: boolean;
   createdAt: Date;
 }
 
@@ -25,11 +29,14 @@ export interface Proveedor {
 export interface Material {
   id: string;
   nombre: string;
-  descripcion: string;
+  descripcion?: string;
+  categoria?: string;
+  unidadMedida: string;
   precioUnitario: number;
-  unidad: string;
   proveedorId?: string;
-  stock: number;
+  stock?: number;
+  stockMinimo?: number;
+  activo?: boolean;
   createdAt: Date;
 }
 

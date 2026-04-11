@@ -19,7 +19,7 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
   const [nombre, setNombre] = useState(initialData?.nombre || '');
   const [descripcion, setDescripcion] = useState(initialData?.descripcion || '');
   const [precioUnitario, setPrecioUnitario] = useState(initialData?.precioUnitario || 0);
-  const [unidad, setUnidad] = useState(initialData?.unidad || 'ud');
+  const [unidadMedida, setUnidadMedida] = useState(initialData?.unidadMedida || 'ud');
   const [proveedorId, setProveedorId] = useState(initialData?.proveedorId || '');
   const [stock, setStock] = useState(initialData?.stock || 0);
 
@@ -39,7 +39,7 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
       nombre,
       descripcion,
       precioUnitario,
-      unidad,
+      unidadMedida,
       proveedorId: proveedorId || undefined,
       stock,
     });
@@ -84,8 +84,8 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
         <Select
           label="Unidad"
           options={unidadOptions}
-          value={unidad}
-          onChange={(e) => setUnidad(e.target.value)}
+          value={unidadMedida}
+          onChange={(e) => setUnidadMedida(e.target.value)}
         />
       </div>
 
