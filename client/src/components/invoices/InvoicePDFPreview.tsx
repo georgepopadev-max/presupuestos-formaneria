@@ -46,7 +46,7 @@ export function InvoicePDFPreview({ factura }: InvoicePDFPreviewProps) {
           </tr>
         </thead>
         <tbody>
-          {factura.lineas.map((linea) => (
+          {(Array.isArray(factura.lineas) ? factura.lineas : []).map((linea) => (
             <tr key={linea.id} className="border-b border-gray-200">
               <td className="py-2">{linea.descripcion}</td>
               <td className="py-2 text-right">{linea.cantidad}</td>

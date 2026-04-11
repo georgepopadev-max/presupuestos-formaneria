@@ -73,7 +73,7 @@ export function BudgetDetail({
             </tr>
           </thead>
           <tbody>
-            {presupuesto.lineas.map((linea) => (
+            {(Array.isArray(presupuesto.lineas) ? presupuesto.lineas : []).map((linea) => (
               <tr key={linea.id} className="border-b last:border-b-0">
                 <td className="py-3">{linea.descripcion}</td>
                 <td className="py-3 text-right">{linea.cantidad}</td>

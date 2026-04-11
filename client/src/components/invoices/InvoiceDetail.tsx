@@ -79,7 +79,7 @@ export function InvoiceDetail({
             </tr>
           </thead>
           <tbody>
-            {factura.lineas.map((linea) => (
+            {(Array.isArray(factura.lineas) ? factura.lineas : []).map((linea) => (
               <tr key={linea.id} className="border-b last:border-b-0">
                 <td className="py-3">{linea.descripcion}</td>
                 <td className="py-3 text-right">{linea.cantidad}</td>

@@ -90,7 +90,7 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
       </div>
 
       {/* Proveedor */}
-      {proveedores.length > 0 && (
+      {Array.isArray(proveedores) && proveedores.length > 0 && (
         <Select
           label="Proveedor"
           options={proveedores.map(p => ({ value: p.id, label: p.nombre }))}

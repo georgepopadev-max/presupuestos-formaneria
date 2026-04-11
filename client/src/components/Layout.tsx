@@ -4,11 +4,11 @@ import { Sidebar } from './Sidebar';
 
 export function Layout() {
   return (
-    <Fragment>
+    <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 min-h-screen bg-gray-50">
+      <main className="flex-1 bg-gray-50 overflow-auto">
         <Outlet />
       </main>
-    </Fragment>
+    </div>
   );
 }
