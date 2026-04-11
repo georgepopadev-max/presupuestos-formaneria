@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api",
-      "destination": "https://presupuestos-formaneria-server.up.railway.app/api"
+      "destination": "https://presupuestos-formaneria.onrender.com/api"
     }
   ]
 }
