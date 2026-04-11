@@ -43,7 +43,29 @@ export default function Budgets() {
         presupuestosService.getAll(),
         clientesService.getAll(),
       ]);
-      
+
+      // Verificar que las respuestas no sean null/304
+      if (!presupuestosRes?.data || !clientesRes?.data) {
+        console.warn('Respuesta vacía del servidor, reintentando...');
+        setError('Conexión incompleta. Cargando datos...');
+        setLoading(false);
+        // Reintentar una vez después de 1 segundo
+        setTimeout(() => {
+          setLoading(true);
+          setError(null);
+          Promise.all([
+            presupuestosService.getAll(),
+            clientesService.getAll(),
+          ]).then(([retryPresupuestos, retryClientes]) => {
+            setPresupuestos(retryPresupuestos.data || []);
+            setClientes(retryClientes.data || []);
+          }).catch(() => {
+            setError('No se pudieron cargar los presupuestos. Intenta recargar la página.');
+          }).finally(() => setLoading(false));
+        }, 1000);
+        return;
+      }
+
       // Service returns AxiosResponse<Presupuesto[]>, so .data is the array
       const presupuestosData: Presupuesto[] = presupuestosRes.data;
       const clientesData: Cliente[] = clientesRes.data;

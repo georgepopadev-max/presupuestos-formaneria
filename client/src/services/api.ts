@@ -13,8 +13,13 @@ const api = axios.create({
   },
 });
 
-// Interceptor para añadir token de autenticación
+// Desactivar soporte ETag/Conditional GET para evitar 304 con body vacío
 api.interceptors.request.use((config) => {
+  // Eliminar cabeceras que causarían respuestas 304 Not Modified
+  delete config.headers['If-None-Match'];
+  delete config.headers['If-Modified-Since'];
+  delete config.headers['Cache-Control'];
+  // Añadir token de autenticación
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -26,17 +31,28 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Manejar respuestas 304 Not Modified - no es un error real
-    if (error.response?.status === 304) {
-      // Devolver una respuesta "vacía" con datos nulos para no romper las queries
-      return Promise.resolve({ ...error.response, data: null });
-    }
+    // Guardar la respuesta original por si我们需要 usarla
+    const originalResponse = error.response;
 
     // Manejar errores de autenticación
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
       return Promise.reject(error);
+    }
+
+    // Manejar 304 Not Modified - hacer un refetch automático
+    if (error.response?.status === 304) {
+      console.warn('304 Not Modified - forzando refetch');
+
+      // Crear una nueva petición limpia sin las cabeceras condicionales
+      const cleanConfig = { ...error.config };
+      delete cleanConfig.headers['If-None-Match'];
+      delete cleanConfig.headers['If-Modified-Since'];
+      delete cleanConfig.headers['Cache-Control'];
+
+      // Hacer la petición de nuevo
+      return api(cleanConfig);
     }
 
     // Manejar errores 500 - loguear para debug
