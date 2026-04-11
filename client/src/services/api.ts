@@ -30,8 +30,8 @@ api.interceptors.request.use((config) => {
 // Interceptor para manejar respuestas exitosas - verificar que no vengan vacías
 api.interceptors.response.use(
   (response) => {
-    console.log('🔵 Response:', response.config.url, response.status, response.data);
-    
+    console.log('🔵 Response:', response.config.url, response.status, typeof response.data, JSON.stringify(response.data)?.slice(0, 200));
+
     // Verificar que los datos no sean null/undefined para respuestas de API
     if (response.config.url?.includes('/api/') && response.status === 200) {
       // Si data es null o undefined, convertir a array/object vacío según el endpoint
@@ -45,6 +45,14 @@ api.interceptors.response.use(
           response.data = [];
         } else {
           response.data = {};
+        }
+      }
+      // Si la respuesta tiene estructura { success, data } (backend wrapper), unwrapear
+      else if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+        const wrapper = response.data as any;
+        if (Array.isArray(wrapper.data)) {
+          console.log('Unwrapping response data from {success,data} format');
+          response.data = wrapper.data;
         }
       }
     }
