@@ -34,18 +34,18 @@ export function MaterialList({ materiales, onView, onEdit, onDelete }: MaterialL
       ),
     },
     {
-      key: 'unidad',
+      key: 'unidadMedida',
       header: 'Ud.',
       render: (row: Material) => (
-        <span className="text-gray-600">{row.unidad}</span>
+        <span className="text-gray-600">{row.unidadMedida}</span>
       ),
     },
     {
       key: 'stock',
       header: 'Stock',
       render: (row: Material) => (
-        <span className={row.stock < 10 ? 'text-red-600 font-medium' : ''}>
-          {row.stock}
+        <span className={(row.stock ?? 0) < 10 ? 'text-red-600 font-medium' : ''}>
+          {row.stock ?? 0}
         </span>
       ),
     },
