@@ -27,9 +27,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor para manejar errores globalmente
+// Interceptor para manejar respuestas exitosas - verificar que no vengan vacías
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Verificar que los datos no sean null/undefined para respuestas de API
+    if (response.config.url?.includes('/api/') && response.status === 200) {
+      // Si data es null o undefined, convertir a array/object vacío según el endpoint
+      if (response.data === null || response.data === undefined) {
+        console.warn('Respuesta null para:', response.config.url, '- normalizando a array vacío');
+        // Normalizar según el tipo de endpoint
+        const url = response.config.url;
+        if (url.includes('/presupuestos') || url.includes('/clientes') ||
+            url.includes('/facturas') || url.includes('/proveedores') ||
+            url.includes('/materiales') || url.includes('/proyectos')) {
+          response.data = [];
+        } else {
+          response.data = {};
+        }
+      }
+    }
+    return response;
+  },
   (error) => {
     // Manejar errores de autenticación
     if (error.response?.status === 401) {
@@ -48,8 +66,17 @@ api.interceptors.response.use(
       delete cleanConfig.headers['If-Modified-Since'];
       delete cleanConfig.headers['Cache-Control'];
 
-      // Hacer la petición de nuevo
-      return api(cleanConfig);
+      // Hacer la petición de nuevo y propagar el resultado
+      return api(cleanConfig).then(
+        (response) => {
+          // Verificar que la respuesta no sea vacía
+          if (response.data === null || response.data === undefined || response.data === '') {
+            console.warn('Retry returned empty data, rejecting');
+            return Promise.reject(new Error('Respuesta vacía del servidor'));
+          }
+          return response;
+        }
+      );
     }
 
     // Manejar errores 500 - loguear para debug
