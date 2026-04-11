@@ -30,6 +30,8 @@ api.interceptors.request.use((config) => {
 // Interceptor para manejar respuestas exitosas - verificar que no vengan vacías
 api.interceptors.response.use(
   (response) => {
+    console.log('🔵 Response:', response.config.url, response.status, response.data);
+    
     // Verificar que los datos no sean null/undefined para respuestas de API
     if (response.config.url?.includes('/api/') && response.status === 200) {
       // Si data es null o undefined, convertir a array/object vacío según el endpoint
@@ -49,6 +51,52 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.log('🔴 Error intercepted:', error.response?.status, error.config?.url, error.response?.data);
+    
+    // Manejar errores de autenticación
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+      return Promise.reject(error);
+    }
+
+    // Manejar 304 Not Modified - hacer un refetch automático
+    if (error.response?.status === 304) {
+      console.warn('304 Not Modified - forzando refetch');
+
+      // Crear una nueva petición limpia sin las cabeceras condicionales
+      const cleanConfig = { ...error.config };
+      delete cleanConfig.headers['If-None-Match'];
+      delete cleanConfig.headers['If-Modified-Since'];
+      delete cleanConfig.headers['Cache-Control'];
+
+      // Hacer la petición de nuevo y propagar el resultado
+      return api(cleanConfig).then(
+        (response) => {
+          // Verificar que la respuesta no sea vacía
+          if (response.data === null || response.data === undefined || response.data === '') {
+            console.warn('Retry returned empty data, rejecting');
+            return Promise.reject(new Error('Respuesta vacía del servidor'));
+          }
+          return response;
+        }
+      );
+    }
+
+    // Manejar errores 500 - loguear para debug
+    if (error.response?.status === 500) {
+      console.error('Error 500 del servidor:', error.response?.data?.message || 'Error interno', error.response?.data);
+    }
+
+    // Manejar errores 4xx de forma general
+    if (error.response?.status >= 400 && error.response?.status < 500) {
+      const message = error.response?.data?.message || `Error ${error.response?.status}`;
+      console.warn(`API Error ${error.response?.status}:`, message);
+    }
+
+    return Promise.reject(error);
+  }
+);
     // Manejar errores de autenticación
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
