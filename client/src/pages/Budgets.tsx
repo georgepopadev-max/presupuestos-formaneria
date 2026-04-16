@@ -280,7 +280,7 @@ export default function Budgets() {
           clienteId: Number(formData.clienteId),
           titulo: formData.titulo || 'Presupuesto sin título',
           estado: formData.estado,
-          fechaValidez: formData.fechaValidez ? new Date(formData.fechaValidez) : undefined,
+          fechaValidez: formData.fechaValidez || undefined,
           subtotal,
           iva,
           total,

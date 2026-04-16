@@ -36,6 +36,7 @@ const crearPresupuestoSchema = Joi.object({
       cantidad: Joi.number().positive().required(),
       precioUnitario: Joi.number().min(0).required(),
       importe: Joi.number().min(0).required(),
+      tipoIva: Joi.string().valid('general', 'reducido', 'superreducido', 'exento').default('general'),
     })
   ).required(),
 });
@@ -58,6 +59,7 @@ const actualizarPresupuestoSchema = Joi.object({
       cantidad: Joi.number().positive().required(),
       precioUnitario: Joi.number().min(0).required(),
       importe: Joi.number().min(0).required(),
+      tipoIva: Joi.string().valid('general', 'reducido', 'superreducido', 'exento').default('general'),
     })
   ),
 });

@@ -10,7 +10,11 @@ import knexConfig from '../../knexfile';
 import { Usuario } from '../types';
 
 const db = knex(knexConfig);
-const JWT_SECRET = process.env.JWT_SECRET || 'tu-secret-super-secreto-2024';
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
 
 export class AuthService {

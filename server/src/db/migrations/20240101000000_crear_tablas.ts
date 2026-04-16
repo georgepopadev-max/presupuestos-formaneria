@@ -87,6 +87,7 @@ export const up = async (knex: Knex): Promise<void> => {
     table.date('fecha_validez');
     table.date('fecha_creacion');
     table.text('notas');
+    table.boolean('activo').defaultTo(true);
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
   });

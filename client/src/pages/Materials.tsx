@@ -56,7 +56,7 @@ export default function Materials() {
     setModalOpen(true);
   };
 
-  const handleUpdate = async (id: string, data: Omit<Material, 'id' | 'createdAt'>) => {
+  const handleUpdate = async (id: number, data: Omit<Material, 'id' | 'createdAt'>) => {
     try {
       setError(null);
       await materialesService.update(id, data);
@@ -87,7 +87,7 @@ export default function Materials() {
 
   const handleFormSubmit = async (data: Omit<Material, 'id' | 'createdAt'>) => {
     if (selectedMaterial?.id) {
-      await handleUpdate(selectedMaterial.id, data);
+      await handleUpdate(Number(selectedMaterial.id), data);
     } else {
       await handleCreate(data);
     }

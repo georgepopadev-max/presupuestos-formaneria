@@ -63,11 +63,13 @@ export class PresupuestoRepository {
   }
 
   /**
-   * Eliminar un presupuesto
+   * Eliminar un presupuesto (soft-delete)
    */
   async delete(id: number): Promise<boolean> {
-    const deleted = await db('presupuestos').where({ id }).del();
-    return deleted > 0;
+    const rowsDeleted = await db('presupuestos')
+      .where({ id })
+      .update({ activo: false, updated_at: db.fn.now() });
+    return rowsDeleted > 0;
   }
 }
 

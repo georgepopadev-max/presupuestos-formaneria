@@ -2,7 +2,7 @@
 // Empresa de fontanería en España
 
 export interface Cliente {
-  id: string;
+  id: number;
   nombre: string;
   cif: string;
   direccion: string;
@@ -12,7 +12,7 @@ export interface Cliente {
 }
 
 export interface Proveedor {
-  id: string;
+  id: number;
   nombre: string;
   cif: string;
   direccion: string;
@@ -23,18 +23,21 @@ export interface Proveedor {
 }
 
 export interface Material {
-  id: string;
+  id: number;
   nombre: string;
   descripcion: string;
+  categoria: string;
+  unidadMedida: string;
   precioUnitario: number;
-  unidad: string;
-  proveedorId?: string;
-  stock: number;
+  proveedorId?: number;
+  stock?: number;
+  stockMinimo?: number;
+  activo: boolean;
   createdAt: Date;
 }
 
 export interface LineaPresupuesto {
-  id: string;
+  id: number;
   descripcion: string;
   cantidad: number;
   precioUnitario: number;
@@ -44,7 +47,7 @@ export interface LineaPresupuesto {
 }
 
 export interface Presupuesto {
-  id: string;
+  id: number;
   numero: string;
   clienteId: string;
   cliente?: Cliente;
@@ -61,7 +64,7 @@ export interface Presupuesto {
 }
 
 export interface LineaFactura {
-  id: string;
+  id: number;
   descripcion: string;
   cantidad: number;
   precioUnitario: number;
@@ -70,7 +73,7 @@ export interface LineaFactura {
 }
 
 export interface Factura {
-  id: string;
+  id: number;
   numero: string;
   presupuestoId?: string;
   clienteId: string;
@@ -86,7 +89,7 @@ export interface Factura {
 }
 
 export interface Proyecto {
-  id: string;
+  id: number;
   nombre: string;
   descripcion: string;
   clienteId: string;
@@ -100,7 +103,7 @@ export interface Proyecto {
 }
 
 export interface Usuario {
-  id: string;
+  id: number;
   email: string;
   nombre: string;
   role: 'admin' | 'usuario';
@@ -133,4 +136,40 @@ export interface MarketData {
   presupuestosAceptados: number;
   facturacionTotal: number;
   margenPromedio: number;
+}
+
+// Tipos de entrada para crear/actualizar presupuestos
+export interface LineaPresupuestoInput {
+  materialId?: number;
+  descripcion: string;
+  cantidad: number;
+  precioUnidad: number;
+  tipoIva: 'general' | 'reducido' | 'superreducido' | 'exento';
+  margen: number;
+  orden: number;
+}
+
+export interface PresupuestoInput {
+  clienteId: number;
+  estado: 'borrador' | 'enviado' | 'aceptado' | 'rechazado' | 'facturado';
+  fechaValidez: string;
+  notas?: string;
+  descuento?: number;
+  lineas: LineaPresupuestoInput[];
+}
+
+// Tipos de entrada para crear/actualizar facturas
+export interface LineaFacturaInput {
+  descripcion: string;
+  cantidad: number;
+  precioUnitario: number;
+  presupuestoLineaId?: string;
+}
+
+export interface FacturaInput {
+  clienteId: number;
+  estado: 'borrador' | 'emitida' | 'pagada' | 'vencida';
+  fechaEmision: string;
+  fechaVencimiento: string;
+  lineas: LineaFacturaInput[];
 }

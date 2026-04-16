@@ -21,6 +21,9 @@ const TASAS_IVA: Record<string, number> = {
   exento: 0,
 };
 
+// Tipos de IVA válidos
+const TASAS_IVA_VALIDAS = ['general', 'reducido', 'superreducido', 'exento'];
+
 /**
  * Calcula los totales de una factura a partir de sus líneas
  * Aplica el tipo de IVA correspondiente a cada línea
@@ -29,7 +32,11 @@ const calcularTotales = (lineas: Partial<FacturaLinea>[]): { subtotal: number; i
   let subtotal = 0;
   let iva = 0;
   for (const linea of lineas) {
-    const tasa = TASAS_IVA[linea.tipoIva || 'general'];
+    const tipoIva = linea.tipoIva || 'general';
+    if (!TASAS_IVA_VALIDAS.includes(tipoIva)) {
+      throw new Error(`Tipo IVA inválido: ${tipoIva}. Valores válidos: ${TASAS_IVA_VALIDAS.join(', ')}`);
+    }
+    const tasa = TASAS_IVA[tipoIva];
     subtotal += linea.importe || 0;
     iva += (linea.importe || 0) * tasa;
   }
