@@ -129,9 +129,25 @@ export const generarPdfFactura = async (
       doc.text(`${factura.subtotal.toFixed(2)} €`, 460, yPosition, { width: 80, align: 'right' });
       yPosition += 20;
 
-      doc.text('IVA (21%):', 350, yPosition);
-      doc.text(`${factura.iva.toFixed(2)} €`, 460, yPosition, { width: 80, align: 'right' });
-      yPosition += 20;
+      // Calcular breakdown de IVA por tipo
+      const tasasIva: Record<string, number> = {
+        general: 21,
+        reducido: 10,
+        superreducido: 4,
+        exento: 0,
+      };
+      const ivaBreakdown = lineas.reduce<Record<string, number>>((acc, linea) => {
+        const tasa = tasasIva[linea.tipoIva || 'general'] ?? 21;
+        const tipoKey = `${tasa}%`;
+        const lineaIva = (linea.importe * tasa / 100);
+        acc[tipoKey] = (acc[tipoKey] ?? 0) + lineaIva;
+        return acc;
+      }, {});
+      for (const [rate, ivaAmount] of Object.entries(ivaBreakdown)) {
+        doc.text(`IVA (${rate}):`, 350, yPosition);
+        doc.text(`${ivaAmount.toFixed(2)} €`, 460, yPosition, { width: 80, align: 'right' });
+        yPosition += 20;
+      }
 
       doc.font('Helvetica-Bold').text('TOTAL:', 350, yPosition);
       doc.text(`${factura.total.toFixed(2)} €`, 460, yPosition, { width: 80, align: 'right' });
