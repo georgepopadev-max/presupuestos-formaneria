@@ -83,7 +83,7 @@ export interface Factura {
   subtotal: number;
   iva: number;
   total: number;
-  estado: 'borrador' | 'emitida' | 'pagada' | 'vencida';
+  estado: 'borrador' | 'emitida' | 'pagada' | 'vencida' | 'cancelada';
   fechaEmision: Date;
   fechaVencimiento: Date;
   createdAt: Date;
@@ -169,7 +169,7 @@ export interface LineaFacturaInput {
 
 export interface FacturaInput {
   clienteId: number;
-  estado: 'borrador' | 'emitida' | 'pagada' | 'vencida';
+  estado: 'borrador' | 'emitida' | 'pagada' | 'vencida' | 'cancelada';
   fechaEmision: string;
   fechaVencimiento: string;
   lineas: LineaFacturaInput[];

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { BudgetList } from '../components/budgets/BudgetList';
 import { BudgetDetail } from '../components/budgets/BudgetDetail';
 import { Button } from '../components/common/Button';
@@ -33,6 +33,9 @@ export default function Budgets() {
   });
   const [formLineas, setFormLineas] = useState<LineaPresupuesto[]>([]);
   const [formSubmitting, setFormSubmitting] = useState(false);
+
+  // Ref para evitar re-renders por cambios de selectedBudget?.id en fetchData
+  const selectedBudgetIdRef = useRef<number | undefined>(undefined);
 
   // Fetch presupuestos and clientes on mount
   const fetchData = useCallback(async () => {
@@ -73,9 +76,10 @@ export default function Budgets() {
       setPresupuestos(presupuestosData);
       setClientes(clientesData);
       
-      // If we have a selectedBudget, refresh its data
-      if (selectedBudget) {
-        const updated = presupuestosData?.find((p: Presupuesto) => p.id === selectedBudget.id);
+      // If we have a selectedBudget, refresh its data using ref to avoid re-renders
+      const currentBudgetId = selectedBudgetIdRef.current;
+      if (currentBudgetId !== undefined) {
+        const updated = presupuestosData?.find((p: Presupuesto) => p.id === currentBudgetId);
         if (updated) {
           // Enrich with client data if not included
           if (!updated.cliente && updated.clienteId) {
@@ -90,7 +94,7 @@ export default function Budgets() {
     } finally {
       setLoading(false);
     }
-  }, [selectedBudget?.id]);
+  }, []);
 
   useEffect(() => {
     fetchData();

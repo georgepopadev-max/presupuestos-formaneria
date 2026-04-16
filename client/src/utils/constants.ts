@@ -7,6 +7,7 @@ export const PRESUPUESTO_ESTADOS = {
   ENVIADO: 'enviado',
   ACEPTADO: 'aceptado',
   RECHAZADO: 'rechazado',
+  FACTURADO: 'facturado',
 } as const;
 
 export const PRESUPUESTO_ESTADOS_LABELS: Record<string, string> = {
@@ -14,6 +15,7 @@ export const PRESUPUESTO_ESTADOS_LABELS: Record<string, string> = {
   [PRESUPUESTO_ESTADOS.ENVIADO]: 'Enviado',
   [PRESUPUESTO_ESTADOS.ACEPTADO]: 'Aceptado',
   [PRESUPUESTO_ESTADOS.RECHAZADO]: 'Rechazado',
+  [PRESUPUESTO_ESTADOS.FACTURADO]: 'Facturado',
 };
 
 // Estados de factura
@@ -22,6 +24,7 @@ export const FACTURA_ESTADOS = {
   EMITIDA: 'emitida',
   PAGADA: 'pagada',
   VENCIDA: 'vencida',
+  CANCELADA: 'cancelada',
 } as const;
 
 export const FACTURA_ESTADOS_LABELS: Record<string, string> = {
@@ -29,6 +32,7 @@ export const FACTURA_ESTADOS_LABELS: Record<string, string> = {
   [FACTURA_ESTADOS.EMITIDA]: 'Emitida',
   [FACTURA_ESTADOS.PAGADA]: 'Pagada',
   [FACTURA_ESTADOS.VENCIDA]: 'Vencida',
+  [FACTURA_ESTADOS.CANCELADA]: 'Cancelada',
 };
 
 // Estados de proyecto
@@ -65,9 +69,11 @@ export const ESTADO_COLORS: Record<string, string> = {
   enviado: 'bg-blue-100 text-blue-800',
   aceptado: 'bg-green-100 text-green-800',
   rechazado: 'bg-red-100 text-red-800',
+  facturado: 'bg-purple-100 text-purple-800',
   emitida: 'bg-blue-100 text-blue-800',
   pagada: 'bg-green-100 text-green-800',
   vencida: 'bg-red-100 text-red-800',
+  cancelada: 'bg-red-100 text-red-800',
   planificado: 'bg-gray-100 text-gray-800',
   en_progreso: 'bg-yellow-100 text-yellow-800',
   completado: 'bg-green-100 text-green-800',
