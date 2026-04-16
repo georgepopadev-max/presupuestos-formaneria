@@ -38,10 +38,12 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
     onSubmit({
       nombre,
       descripcion,
+      categoria: '',
       precioUnitario,
       unidadMedida,
       proveedorId: proveedorId !== '' ? Number(proveedorId) : undefined,
       stock,
+      activo: true,
     });
   };
 

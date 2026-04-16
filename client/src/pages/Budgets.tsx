@@ -130,7 +130,7 @@ export default function Budgets() {
     const enriched = enrichPresupuesto(budget);
     setEditingBudget(enriched);
     setFormData({
-      clienteId: enriched.clienteId || '',
+      clienteId: String(enriched.clienteId) || '',
       titulo: enriched.titulo || '',
       estado: enriched.estado || 'borrador',
       fechaValidez: enriched.fechaValidez 
@@ -169,15 +169,10 @@ export default function Budgets() {
     try {
       // Create a clone with new data (no id, no numero - backend generates)
       const cloneData = {
-        data: {
-          clienteId: budget.clienteId,
-          titulo: budget.titulo ? `${budget.titulo} (copia)` : 'Copia de presupuesto',
-          estado: 'borrador',
-          fechaValidez: budget.fechaValidez,
-          subtotal: budget.subtotal,
-          iva: budget.iva,
-          total: budget.total,
-        },
+        clienteId: budget.clienteId,
+        titulo: budget.titulo ? `${budget.titulo} (copia)` : 'Copia de presupuesto',
+        estado: 'borrador' as const,
+        fechaValidez: budget.fechaValidez || undefined,
         lineas: budget.lineas?.map((l: LineaPresupuesto) => ({
           descripcion: l.descripcion,
           cantidad: l.cantidad,
@@ -187,7 +182,7 @@ export default function Budgets() {
         })) || [],
       };
       
-      await presupuestosService.create(cloneData);
+      await presupuestosService.create(cloneData as any);
       await fetchData();
     } catch (err: any) {
       console.error('Error cloning:', err);
@@ -229,6 +224,7 @@ export default function Budgets() {
       cantidad: 1,
       precioUnitario: 0,
       importe: 0,
+      tipoIva: 'general',
     }]);
     setIsModalOpen(true);
   };
@@ -247,6 +243,7 @@ export default function Budgets() {
       cantidad: 1,
       precioUnitario: 0,
       importe: 0,
+      tipoIva: 'general',
     }]);
   };
 
@@ -315,10 +312,16 @@ export default function Budgets() {
         })),
       };
 
+      // Flatten the payload to match PresupuestoInput
+      const inputData = {
+        ...payload.data,
+        lineas: payload.lineas,
+      };
+
       if (editingBudget?.id) {
-        await presupuestosService.update(editingBudget.id, payload);
+        await presupuestosService.update(editingBudget.id, inputData as any);
       } else {
-        await presupuestosService.create(payload);
+        await presupuestosService.create(inputData as any);
       }
 
       handleCloseModal();
@@ -404,7 +407,7 @@ export default function Budgets() {
           <div className="grid grid-cols-2 gap-4">
             <Select
               label="Cliente"
-              options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: c.id, label: c.nombre }))}
+              options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: String(c.id), label: c.nombre }))}
               value={formData.clienteId}
               onChange={(e) => setFormData(prev => ({ ...prev, clienteId: e.target.value }))}
               placeholder="Seleccione un cliente"

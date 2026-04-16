@@ -36,7 +36,7 @@ export function useCreatePresupuesto() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (data: { data: any; lineas: any[] }) => {
+    mutationFn: async (data: any) => {
       const response = await presupuestosService.create(data);
       return response.data;
     },
@@ -54,7 +54,7 @@ export function useUpdatePresupuesto() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: { data: any; lineas?: any[] } }) => {
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
       const response = await presupuestosService.update(id, data);
       return response.data;
     },
@@ -72,7 +72,7 @@ export function useDeletePresupuesto() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: number) => {
       await presupuestosService.delete(id);
     },
     onSuccess: () => {
@@ -88,7 +88,7 @@ export function useCambiarEstadoPresupuesto() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, estado }: { id: string; estado: Presupuesto['estado'] }) => {
+    mutationFn: async ({ id, estado }: { id: number; estado: Presupuesto['estado'] }) => {
       const response = await presupuestosService.cambiarEstado(id, estado);
       return response.data;
     },

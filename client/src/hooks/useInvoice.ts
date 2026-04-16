@@ -18,7 +18,7 @@ export function useFacturas() {
 /**
  * Hook para obtener una factura por ID
  */
-export function useFactura(id: string) {
+export function useFactura(id: number) {
   return useQuery({
     queryKey: ['factura', id],
     queryFn: async () => {
@@ -36,7 +36,7 @@ export function useCreateFactura() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (data: Omit<Factura, 'id' | 'numero' | 'createdAt'>) => {
+    mutationFn: async (data: any) => {
       const response = await facturasService.create(data);
       return response.data;
     },
@@ -53,7 +53,7 @@ export function useUpdateFactura() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<Factura> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
       const response = await facturasService.update(id, data);
       return response.data;
     },
@@ -71,7 +71,7 @@ export function useDeleteFactura() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: number) => {
       await facturasService.delete(id);
     },
     onSuccess: () => {
@@ -87,7 +87,7 @@ export function useCambiarEstadoFactura() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, estado }: { id: string; estado: Factura['estado'] }) => {
+    mutationFn: async ({ id, estado }: { id: number; estado: Factura['estado'] }) => {
       const response = await facturasService.cambiarEstado(id, estado);
       return response.data;
     },

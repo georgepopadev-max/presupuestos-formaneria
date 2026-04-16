@@ -18,7 +18,7 @@ export function useMateriales() {
 /**
  * Hook para obtener un material por ID
  */
-export function useMaterial(id: string) {
+export function useMaterial(id: number) {
   return useQuery({
     queryKey: ['material', id],
     queryFn: async () => {
@@ -53,7 +53,7 @@ export function useUpdateMaterial() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<Material> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<Material> }) => {
       const response = await materialesService.update(id, data);
       return response.data;
     },
@@ -71,7 +71,7 @@ export function useDeleteMaterial() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: number) => {
       await materialesService.delete(id);
     },
     onSuccess: () => {

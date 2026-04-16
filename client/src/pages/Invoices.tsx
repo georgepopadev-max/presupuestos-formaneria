@@ -5,19 +5,7 @@ import { InvoiceDetail } from '../components/invoices/InvoiceDetail';
 import { InvoiceForm } from '../components/invoices/InvoiceForm';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
-import { IVA_TASAS } from '../utils/constants';
 import type { Factura, Cliente, LineaFactura } from '../types';
-
-// Mapping de tipoIva a tasa numérica
-const TIPO_IVA_MAP: Record<string, number> = {
-  general: IVA_TASAS.GENERAL,
-  reducido: IVA_TASAS.REDUCIDO,
-  super_reducido: IVA_TASAS.SUPER_REDUCIDO,
-};
-
-const getIvaRate = (tipoIva: string): number => {
-  return TIPO_IVA_MAP[tipoIva] ?? IVA_TASAS.GENERAL;
-};
 
 /**
  * Página de Facturas
@@ -106,23 +94,12 @@ export default function Invoices() {
     fechaVencimiento: string;
     presupuestoId?: string;
   }) => {
-    // Calculate totals from lineas
-    const subtotal = data.lineas.reduce((sum, l) => sum + (l.cantidad * l.precioUnitario), 0);
-    const iva = data.lineas.reduce((sum, l) => {
-      const rate = getIvaRate(l.tipoIva) / 100;
-      return sum + (l.cantidad * l.precioUnitario * rate);
-    }, 0);
-    const total = subtotal + iva;
-
     if (editingFactura?.id) {
       // Update existing factura
-      const updateData: Partial<Factura> = {
+      const updateData = {
         clienteId: Number(data.clienteId),
-        lineas: data.lineas,
-        fechaVencimiento: new Date(data.fechaVencimiento),
-        subtotal,
-        iva,
-        total,
+        lineas: data.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, precioUnitario: l.precioUnitario, importe: l.importe, tipoIva: l.tipoIva })),
+        fechaVencimiento: data.fechaVencimiento,
       };
       facturasService.update(editingFactura.id, updateData)
         .then(() => {
@@ -140,16 +117,13 @@ export default function Invoices() {
         });
     } else {
       // Create new factura
+      const hoy = new Date().toISOString().split('T')[0];
       const createData = {
         clienteId: Number(data.clienteId),
-        lineas: data.lineas,
-        fechaVencimiento: new Date(data.fechaVencimiento),
-        presupuestoId: data.presupuestoId,
-        subtotal,
-        iva,
-        total,
+        lineas: data.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, precioUnitario: l.precioUnitario, importe: l.importe, tipoIva: l.tipoIva })),
+        fechaVencimiento: data.fechaVencimiento,
+        fechaEmision: hoy,
         estado: 'borrador' as const,
-        fechaEmision: new Date(),
       };
       facturasService.create(createData)
         .then(() => {
@@ -192,7 +166,7 @@ export default function Invoices() {
 
   // Prepare form initial data for edit mode
   const formInitialData = editingFactura ? {
-    clienteId: editingFactura.clienteId,
+    clienteId: String(editingFactura.clienteId),
     lineas: editingFactura.lineas,
     fechaVencimiento: editingFactura.fechaVencimiento instanceof Date
       ? editingFactura.fechaVencimiento.toISOString().split('T')[0]

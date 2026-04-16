@@ -49,7 +49,7 @@ export interface LineaPresupuesto {
 export interface Presupuesto {
   id: number;
   numero: string;
-  clienteId: string;
+  clienteId: number;
   cliente?: Cliente;
   titulo?: string;
   lineas: LineaPresupuesto[];
@@ -77,7 +77,7 @@ export interface Factura {
   id: number;
   numero: string;
   presupuestoId?: string;
-  clienteId: string;
+  clienteId: number;
   cliente?: Cliente;
   lineas: LineaFactura[];
   subtotal: number;
