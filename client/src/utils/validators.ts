@@ -70,10 +70,10 @@ export const validateCliente = (cliente: Partial<Cliente>): string[] => {
   if (!cliente.nombre?.trim()) {
     errors.push('El nombre es obligatorio');
   }
-  if (!cliente.nif?.trim()) {
-    errors.push('El NIF es obligatorio');
-  } else if (!isValidCIF(cliente.nif)) {
-    errors.push('El NIF no tiene un formato válido');
+  if (!cliente.cif?.trim()) {
+    errors.push('El CIF es obligatorio');
+  } else if (!isValidCIF(cliente.cif)) {
+    errors.push('El CIF no tiene un formato válido');
   }
   if (cliente.email && !isValidEmail(cliente.email)) {
     errors.push('El email no tiene un formato válido');
