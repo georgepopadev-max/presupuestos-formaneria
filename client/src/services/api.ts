@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { 
   Cliente, Proveedor, Material, Presupuesto, Factura, Proyecto, Usuario, LoginCredentials,
-  LineaPresupuestoInput, PresupuestoInput, LineaFacturaInput, FacturaInput
+  PresupuestoInput, FacturaInput
 } from '../types';
 
 // Cliente HTTP configurado para la API del backend
