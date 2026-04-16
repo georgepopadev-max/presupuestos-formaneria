@@ -144,15 +144,14 @@ export interface LineaPresupuestoInput {
   materialId?: number;
   descripcion: string;
   cantidad: number;
-  precioUnidad: number;
+  precioUnitario: number;
   tipoIva: 'general' | 'reducido' | 'superreducido' | 'exento';
-  margen: number;
-  orden: number;
+  importe?: number;
 }
 
 export interface PresupuestoInput {
   clienteId: number;
-  estado: 'borrador' | 'enviado' | 'aceptado' | 'rechazado' | 'facturado';
+  estado: 'borrador' | 'enviado' | 'aceptado' | 'rechazado' | 'facturado' | 'vencido';
   fechaValidez: string;
   notas?: string;
   descuento?: number;
@@ -164,7 +163,7 @@ export interface LineaFacturaInput {
   descripcion: string;
   cantidad: number;
   precioUnitario: number;
-  presupuestoLineaId?: string;
+  tipoIva: 'general' | 'reducido' | 'superreducido' | 'exento';
 }
 
 export interface FacturaInput {
@@ -172,5 +171,6 @@ export interface FacturaInput {
   estado: 'borrador' | 'emitida' | 'pagada' | 'vencida' | 'cancelada';
   fechaEmision: string;
   fechaVencimiento: string;
+  serie?: string;
   lineas: LineaFacturaInput[];
 }
