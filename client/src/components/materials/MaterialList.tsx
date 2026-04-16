@@ -27,17 +27,17 @@ export function MaterialList({ materiales, onView, onEdit, onDelete }: MaterialL
       ),
     },
     {
-      key: 'precio_unitario',
+      key: 'precioUnitario',
       header: 'Precio',
       render: (row: Material) => (
-        <span className="font-medium">{formatCurrency(row.precio_unitario)}</span>
+        <span className="font-medium">{formatCurrency(row.precioUnitario)}</span>
       ),
     },
     {
-      key: 'unidad_medida',
+      key: 'unidadMedida',
       header: 'Ud.',
       render: (row: Material) => (
-        <span className="text-gray-600">{row.unidad_medida}</span>
+        <span className="text-gray-600">{row.unidadMedida}</span>
       ),
     },
     {

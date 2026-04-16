@@ -10,8 +10,8 @@ interface InvoiceContextType {
   // Acciones
   setCurrentInvoice: (invoice: Partial<Factura>) => void;
   addLinea: (linea: Omit<LineaFactura, 'id'>) => void;
-  updateLinea: (id: string, linea: Partial<LineaFactura>) => void;
-  removeLinea: (id: string) => void;
+  updateLinea: (id: number, linea: Partial<LineaFactura>) => void;
+  removeLinea: (id: number) => void;
   clearInvoice: () => void;
   
   // Valores calculados
@@ -21,6 +21,9 @@ interface InvoiceContextType {
 }
 
 const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined);
+
+let invoiceLineIdCounter = Date.now();
+const generateInvoiceLineId = () => ++invoiceLineIdCounter;
 
 /**
  * Proveedor de contexto para gestión de facturas
@@ -33,13 +36,13 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
   const addLinea = (linea: Omit<LineaFactura, 'id'>) => {
     const newLinea: LineaFactura = {
       ...linea,
-      id: crypto.randomUUID(),
+      id: generateInvoiceLineId(),
       importe: linea.cantidad * linea.precioUnitario,
     };
     setLineas((prev) => [...prev, newLinea]);
   };
 
-  const updateLinea = (id: string, updates: Partial<LineaFactura>) => {
+  const updateLinea = (id: number, updates: Partial<LineaFactura>) => {
     setLineas((prev) =>
       prev.map((linea) => {
         if (linea.id !== id) return linea;
@@ -50,7 +53,7 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const removeLinea = (id: string) => {
+  const removeLinea = (id: number) => {
     setLineas((prev) => prev.filter((linea) => linea.id !== id));
   };
 

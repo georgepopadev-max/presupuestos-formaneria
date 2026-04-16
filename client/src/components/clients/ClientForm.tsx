@@ -15,7 +15,7 @@ interface ClientFormProps {
  */
 export function ClientForm({ initialData, onSubmit, onCancel }: ClientFormProps) {
   const [nombre, setNombre] = useState(initialData?.nombre || '');
-  const [nif, setNif] = useState(initialData?.nif || '');
+  const [cif, setCif] = useState(initialData?.cif || '');
   const [direccion, setDireccion] = useState(initialData?.direccion || '');
   const [telefono, setTelefono] = useState(initialData?.telefono || '');
   const [email, setEmail] = useState(initialData?.email || '');
@@ -24,7 +24,7 @@ export function ClientForm({ initialData, onSubmit, onCancel }: ClientFormProps)
     e.preventDefault();
     onSubmit({
       nombre,
-      nif,
+      cif,
       direccion,
       telefono,
       email,
@@ -45,8 +45,8 @@ export function ClientForm({ initialData, onSubmit, onCancel }: ClientFormProps)
       {/* CIF */}
       <Input
         label="CIF / NIF"
-        value={nif}
-        onChange={(e) => setNif(e.target.value.toUpperCase())}
+        value={cif}
+        onChange={(e) => setCif(e.target.value.toUpperCase())}
         placeholder="B12345678"
         maxLength={9}
       />

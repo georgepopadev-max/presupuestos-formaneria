@@ -1,5 +1,5 @@
 
-import type { Factura, LineaFactura } from '../../types';
+import type { Factura } from '../../types';
 import { Button } from '../common/Button';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { FACTURA_ESTADOS_LABELS, ESTADO_COLORS, IVA_TASAS } from '../../utils/constants';

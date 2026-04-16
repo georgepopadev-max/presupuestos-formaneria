@@ -18,8 +18,8 @@ interface BudgetContextType {
   // Acciones
   setCurrentBudget: (budget: Partial<Presupuesto>) => void;
   addLinea: (linea: Omit<LineaPresupuesto, 'id'>) => void;
-  updateLinea: (id: string, linea: Partial<LineaPresupuesto>) => void;
-  removeLinea: (id: string) => void;
+  updateLinea: (id: number, linea: Partial<LineaPresupuesto>) => void;
+  removeLinea: (id: number) => void;
   clearBudget: () => void;
   
   // Valores calculados
@@ -29,6 +29,9 @@ interface BudgetContextType {
 }
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
+
+let budgetLineIdCounter = Date.now();
+const generateBudgetLineId = () => ++budgetLineIdCounter;
 
 /**
  * Proveedor de contexto para gestión de presupuestos
@@ -41,13 +44,13 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   const addLinea = (linea: Omit<LineaPresupuesto, 'id'>) => {
     const newLinea: LineaPresupuesto = {
       ...linea,
-      id: crypto.randomUUID(),
+      id: generateBudgetLineId(),
       importe: linea.cantidad * linea.precioUnitario,
     };
     setLineas((prev) => [...prev, newLinea]);
   };
 
-  const updateLinea = (id: string, updates: Partial<LineaPresupuesto>) => {
+  const updateLinea = (id: number, updates: Partial<LineaPresupuesto>) => {
     setLineas((prev) =>
       prev.map((linea) => {
         if (linea.id !== id) return linea;
@@ -59,7 +62,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const removeLinea = (id: string) => {
+  const removeLinea = (id: number) => {
     setLineas((prev) => prev.filter((linea) => linea.id !== id));
   };
 

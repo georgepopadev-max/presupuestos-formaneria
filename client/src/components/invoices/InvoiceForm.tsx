@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { LineaFactura, Cliente } from '../../types';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -27,6 +27,9 @@ interface InvoiceFormProps {
 /**
  * Formulario para crear o editar facturas
  */
+let invoiceLineIdCounter = Date.now();
+const generateInvoiceLineId = () => ++invoiceLineIdCounter;
+
 export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, onCancel }: InvoiceFormProps) {
   const [clienteId, setClienteId] = useState(initialData?.clienteId || '');
   const [lineas, setLineas] = useState<LineaFactura[]>(initialData?.lineas || []);
@@ -54,7 +57,7 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
 
   const handleAddLinea = () => {
     const nuevaLinea: LineaFactura = {
-      id: crypto.randomUUID(),
+      id: generateInvoiceLineId(),
       descripcion: '',
       cantidad: 1,
       precioUnitario: 0,
@@ -93,7 +96,7 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
       {/* Selector de cliente */}
       <Select
         label="Cliente"
-        options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: c.id, label: c.nombre }))}
+        options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: String(c.id), label: c.nombre }))}
         value={clienteId}
         onChange={(e) => setClienteId(e.target.value)}
         placeholder="Seleccione un cliente"

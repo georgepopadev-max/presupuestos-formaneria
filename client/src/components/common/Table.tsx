@@ -19,7 +19,7 @@ interface TableProps<T> {
  * Componente Table genérico y reutilizable
  * @generic T - Tipo de datos de las filas
  */
-export function Table<T extends { id?: string }>({
+export function Table<T extends { id?: string | number }>({
   columns,
   data,
   emptyMessage = 'No hay datos disponibles',

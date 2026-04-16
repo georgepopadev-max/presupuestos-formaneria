@@ -1,5 +1,5 @@
 
-import type { Presupuesto, LineaPresupuesto } from '../../types';
+import type { Presupuesto } from '../../types';
 import { Button } from '../common/Button';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { PRESUPUESTO_ESTADOS_LABELS, ESTADO_COLORS, IVA_TASAS } from '../../utils/constants';

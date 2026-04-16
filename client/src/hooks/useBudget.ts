@@ -18,7 +18,7 @@ export function usePresupuestos() {
 /**
  * Hook para obtener un presupuesto por ID
  */
-export function usePresupuesto(id: string) {
+export function usePresupuesto(id: number) {
   return useQuery({
     queryKey: ['presupuesto', id],
     queryFn: async () => {

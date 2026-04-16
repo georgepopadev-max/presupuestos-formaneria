@@ -40,7 +40,7 @@ export function MaterialForm({ proveedores = [], initialData, onSubmit, onCancel
       descripcion,
       precioUnitario,
       unidadMedida,
-      proveedorId: proveedorId || undefined,
+      proveedorId: proveedorId !== '' ? Number(proveedorId) : undefined,
       stock,
     });
   };

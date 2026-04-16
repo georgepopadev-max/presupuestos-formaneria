@@ -58,8 +58,8 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
       cantidad: 1,
       precioUnitario: 0,
       importe: 0,
+      tipoIva,
     };
-    nuevaLinea.tipoIva = tipoIva;
     setLineas([...lineas, nuevaLinea]);
   };
 
@@ -108,7 +108,7 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
       {/* Selector de cliente */}
       <Select
         label="Cliente"
-        options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: c.id, label: c.nombre }))}
+        options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: String(c.id), label: c.nombre }))}
         value={clienteId}
         onChange={(e) => setClienteId(e.target.value)}
         placeholder="Seleccione un cliente"
