@@ -115,7 +115,7 @@ export const validateMaterial = (material: Partial<Material>): string[] => {
   if (!material.nombre?.trim()) {
     errors.push('El nombre es obligatorio');
   }
-  if (material.precio_unitario === undefined || material.precio_unitario < 0) {
+  if (material.precioUnitario === undefined || material.precioUnitario < 0) {
     errors.push('El precio debe ser un valor positivo');
   }
   if (material.stock !== undefined && material.stock < 0) {
