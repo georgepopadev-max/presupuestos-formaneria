@@ -14,6 +14,7 @@ import {
   aceptarPresupuesto,
   rechazarPresupuesto,
   generarFacturaDesdePresupuesto,
+  marcarVencidosPresupuestos,
 } from '../controllers/presupuesto.controller';
 
 const router = Router();
@@ -131,6 +132,15 @@ router.patch('/:id/rechazar', async (req: Request, res: Response, next) => {
 router.post('/:id/facturar', async (req: Request, res: Response, next) => {
   try {
     await generarFacturaDesdePresupuesto(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/presupuestos/vencidos - Marcar presupuestos vencidos
+router.post('/vencidos', async (_req: Request, res: Response, next) => {
+  try {
+    await marcarVencidosPresupuestos(_req, res, next);
   } catch (error) {
     next(error);
   }

@@ -287,3 +287,24 @@ export const generarFacturaDesdePresupuesto = async (
     next(error);
   }
 };
+
+/**
+ * Marca los presupuestos vencidos automáticamente
+ * POST /api/presupuestos/vencidos
+ */
+export const marcarVencidosPresupuestos = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const count = await presupuestoService.marcarVencidos();
+    res.status(200).json({
+      success: true,
+      message: `Se marcaron ${count} presupuestos como vencidos`,
+      data: { count },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

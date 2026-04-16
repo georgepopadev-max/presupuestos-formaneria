@@ -187,6 +187,21 @@ export class PresupuestoService {
   }
 
   /**
+   * Marca como 'vencido' todos los presupuestos cuya fechaValidez ha pasado
+   * y que están en estado 'enviado'
+   * @returns Número de presupuestos marcados como vencidos
+   */
+  async marcarVencidos(): Promise<number> {
+    const ahora = new Date();
+    const resultado = await db('presupuestos')
+      .where('estado', 'enviado')
+      .whereNotNull('fechaValidez')
+      .where('fechaValidez', '<', ahora)
+      .update({ estado: 'vencido', updatedAt: ahora });
+    return resultado;
+  }
+
+  /**
    * Genera una factura a partir de un presupuesto aceptado
    * @param id - ID del presupuesto
    * @param datosAdicionales - Datos adicionales para la factura
