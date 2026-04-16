@@ -43,7 +43,6 @@ export const isValidCIF = (cif: string): boolean => {
     }
     const controlDigit = (10 - (sum % 10)) % 10;
     const lastChar = clean[8].toUpperCase();
-    const expectedLetter = letters[(10 - (sum % 10)) % 10];
     return lastChar === controlDigit.toString() || letters.includes(lastChar);
   }
 
