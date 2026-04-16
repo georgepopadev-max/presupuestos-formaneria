@@ -12,6 +12,10 @@ import { PRESUPUESTO_ESTADOS_LABELS, IVA_TASAS } from '../utils/constants';
 /**
  * Página de Presupuestos - Lista y gestión de presupuestos de la empresa
  */
+
+let budgetFormLineIdCounter = Date.now();
+const generateBudgetFormLineId = () => ++budgetFormLineIdCounter;
+
 export default function Budgets() {
   // Estado principal de presupuestos
   const [presupuestos, setPresupuestos] = useState<Presupuesto[]>([]);
@@ -220,7 +224,7 @@ export default function Budgets() {
       fechaValidez: defaultValidez.toISOString().split('T')[0],
     });
     setFormLineas([{
-      id: crypto.randomUUID(),
+      id: generateBudgetFormLineId(),
       descripcion: '',
       cantidad: 1,
       precioUnitario: 0,
@@ -238,7 +242,7 @@ export default function Budgets() {
 
   const handleAddLinea = () => {
     setFormLineas(prev => [...prev, {
-      id: crypto.randomUUID(),
+      id: generateBudgetFormLineId(),
       descripcion: '',
       cantidad: 1,
       precioUnitario: 0,

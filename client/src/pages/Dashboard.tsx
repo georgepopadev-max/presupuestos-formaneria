@@ -142,7 +142,7 @@ export default function Dashboard() {
             rechazado: 'rechazado',
           };
           activities.push({
-            id: p.id,
+            id: String(p.id),
             tipo: 'presupuesto',
             descripcion: `Presupuesto ${p.numero} ${estadoLabels[p.estado] || p.estado}`,
             monto: p.total,
@@ -163,7 +163,7 @@ export default function Dashboard() {
             vencida: 'vencida',
           };
           activities.push({
-            id: f.id,
+            id: String(f.id),
             tipo: 'factura',
             descripcion: `Factura ${f.numero} ${estadoLabels[f.estado] || f.estado}`,
             monto: f.total,
@@ -178,7 +178,7 @@ export default function Dashboard() {
 
         recentClientes.forEach((c) => {
           activities.push({
-            id: c.id,
+            id: String(c.id),
             tipo: 'cliente',
             descripcion: `Nuevo cliente: ${c.nombre}`,
             fecha: new Date(c.createdAt),

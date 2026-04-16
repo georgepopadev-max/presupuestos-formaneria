@@ -91,7 +91,7 @@ export default function Clients() {
   const handleView = (cliente: Cliente) => {
     // Por ahora solo mostrar en consola, podría abrir un modal de detalles
     console.log('Ver cliente:', cliente);
-    alert(`Cliente: ${cliente.nombre}\nCIF: ${cliente.nif}\nDirección: ${cliente.direccion}\nTeléfono: ${cliente.telefono}\nEmail: ${cliente.email}`);
+    alert(`Cliente: ${cliente.nombre}\nCIF: ${cliente.cif}\nDirección: ${cliente.direccion}\nTeléfono: ${cliente.telefono}\nEmail: ${cliente.email}`);
   };
 
   return (
