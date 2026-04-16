@@ -11,12 +11,14 @@ interface BudgetFormProps {
     clienteId: string;
     lineas: LineaPresupuesto[];
     estado: string;
+    tipoIva: string;
   }>;
   onSubmit: (data: {
     clienteId: string;
     lineas: LineaPresupuesto[];
     estado: string;
     fechaValidez: string;
+    tipoIva: string;
   }) => void;
   onCancel?: () => void;
 }
@@ -31,7 +33,8 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
   const [clienteId, setClienteId] = useState(initialData?.clienteId || '');
   const [lineas, setLineas] = useState<LineaPresupuesto[]>(initialData?.lineas || []);
   const [estado, setEstado] = useState(initialData?.estado || 'borrador');
-  
+  const [tipoIva, setTipoIva] = useState(initialData?.tipoIva || 'general');
+
   // Estados de presupuesto
   const estadoOptions = [
     { value: 'borrador', label: 'Borrador' },
@@ -49,6 +52,7 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
       precioUnitario: 0,
       importe: 0,
     };
+    nuevaLinea.tipoIva = tipoIva;
     setLineas([...lineas, nuevaLinea]);
   };
 
@@ -88,6 +92,7 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
       lineas,
       estado,
       fechaValidez: fechaValidez.toISOString().split('T')[0],
+      tipoIva,
     });
   };
 
@@ -108,6 +113,19 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
         options={estadoOptions}
         value={estado}
         onChange={(e) => setEstado(e.target.value)}
+      />
+
+      {/* Tipo de IVA */}
+      <Select
+        label="Tipo de IVA"
+        options={[
+          { value: 'general', label: '21% General' },
+          { value: 'reducido', label: '10% Reducido' },
+          { value: 'superreducido', label: '4% Superreducido' },
+          { value: 'exento', label: 'Exento' },
+        ]}
+        value={tipoIva}
+        onChange={(e) => setTipoIva(e.target.value)}
       />
 
       {/* Líneas del presupuesto */}
