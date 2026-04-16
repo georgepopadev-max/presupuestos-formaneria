@@ -65,7 +65,22 @@ export function InvoicePDFPreview({ factura }: InvoicePDFPreviewProps) {
             <span>{formatCurrency(factura.subtotal)}</span>
           </div>
           <div className="flex justify-between py-1">
-            <span className="text-gray-600">IVA ({IVA_TASAS.GENERAL}%)</span>
+            <span className="text-gray-600">IVA ({(() => {
+              const lineas = Array.isArray(factura.lineas) ? factura.lineas : [];
+              if (lineas.length === 0) return IVA_TASAS.GENERAL;
+              const tipoIvaMap: Record<string, number> = {
+                general: IVA_TASAS.GENERAL,
+                reducido: IVA_TASAS.REDUCIDO,
+                superreducido: IVA_TASAS.SUPER_REDUCIDO,
+              };
+              const totalBase = lineas.reduce((sum, l) => sum + (l.importe || 0), 0);
+              if (totalBase === 0) return IVA_TASAS.GENERAL;
+              const totalIva = lineas.reduce((sum, l) => {
+                const tasa = tipoIvaMap[l.tipoIva || 'general'] || IVA_TASAS.GENERAL;
+                return sum + (l.importe || 0) * (tasa / 100);
+              }, 0);
+              return Math.round((totalIva / totalBase) * 100);
+            })()}%)</span>
             <span>{formatCurrency(factura.iva)}</span>
           </div>
           <div className="flex justify-between py-2 border-t-2 border-gray-800 font-bold text-lg">

@@ -12,11 +12,13 @@ interface InvoiceFormProps {
     clienteId: string;
     lineas: LineaFactura[];
     fechaVencimiento: string;
+    tipoIva: string;
   }>;
   onSubmit: (data: {
     clienteId: string;
     lineas: LineaFactura[];
     fechaVencimiento: string;
+    tipoIva: string;
     presupuestoId?: string;
   }) => void;
   onCancel?: () => void;
@@ -28,7 +30,8 @@ interface InvoiceFormProps {
 export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, onCancel }: InvoiceFormProps) {
   const [clienteId, setClienteId] = useState(initialData?.clienteId || '');
   const [lineas, setLineas] = useState<LineaFactura[]>(initialData?.lineas || []);
-  
+  const [tipoIva, setTipoIva] = useState(initialData?.tipoIva || 'general');
+
   // Fecha de vencimiento por defecto (30 días) — se recalcula si cambia initialData
   const getDefaultVencimiento = () => {
     if (initialData?.fechaVencimiento) return initialData.fechaVencimiento;
@@ -72,6 +75,7 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
       clienteId,
       lineas,
       fechaVencimiento,
+      tipoIva,
       presupuestoId,
     });
   };
@@ -93,6 +97,19 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
         type="date"
         value={fechaVencimiento}
         onChange={(e) => setFechaVencimiento(e.target.value)}
+      />
+
+      {/* Tipo de IVA */}
+      <Select
+        label="Tipo de IVA"
+        options={[
+          { value: 'general', label: '21% General' },
+          { value: 'reducido', label: '10% Reducido' },
+          { value: 'superreducido', label: '4% Superreducido' },
+          { value: 'exento', label: 'Exento' },
+        ]}
+        value={tipoIva}
+        onChange={(e) => setTipoIva(e.target.value)}
       />
 
       {/* Líneas de la factura */}

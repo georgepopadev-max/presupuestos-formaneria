@@ -30,21 +30,25 @@ export const generarFacturaeXML = (
   factura: Factura,
   cliente: Cliente,
   lineas: FacturaLinea[],
-  empresaDatos: { nombre: string; nif: string; direccion: string }
+  empresaDatos: { nombre: string; nif: string; direccion: string; ciudad: string; codigoPostal: string }
 ): string => {
   
   // Preparar datos del emisor (empresa)
   const emisor = {
     nombre: empresaDatos.nombre,
     nif: empresaDatos.nif,
-    direccion: empresaDatos.direccion
+    direccion: empresaDatos.direccion,
+    ciudad: empresaDatos.ciudad || 'Madrid',
+    codigoPostal: empresaDatos.codigoPostal || '28001',
   };
 
   // Preparar datos del receptor (cliente)
   const receptor = {
     nombre: cliente.nombre,
     nif: cliente.nif || '',
-    direccion: cliente.direccion || ''
+    direccion: cliente.direccion || '',
+    ciudad: (cliente as any).ciudad || 'Madrid',
+    codigoPostal: (cliente as any).codigoPostal || '28001',
   };
 
   // Formatear fecha de emisión (DD-MM-AAAA)

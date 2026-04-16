@@ -100,6 +100,11 @@ export default function Budgets() {
     fetchData();
   }, []);
 
+  // Mantener ref actualizado con el ID del presupuesto seleccionado
+  useEffect(() => {
+    selectedBudgetIdRef.current = selectedBudget?.id;
+  }, [selectedBudget?.id]);
+
   // Enrich presupuesto with cliente data
   const enrichPresupuesto = useCallback((p: Presupuesto): Presupuesto => {
     if (p.cliente) return p;
