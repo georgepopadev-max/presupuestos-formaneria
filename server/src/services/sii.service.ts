@@ -98,19 +98,14 @@ class SIIServiceImpl implements SIIService {
     const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59); // 31 de diciembre
 
     try {
-      // Obtener facturas del año actual
-      const facturas: Factura[] = await facturaRepository.findAll();
-      
-      // Filtrar por año y estado (solo emitidas o pagadas cuentan)
-      const facturasAnuales = facturas.filter((f: Factura) => {
-        const fechaEmision = new Date(f.fechaEmision);
-        return fechaEmision >= startOfYear && 
-               fechaEmision <= endOfYear &&
-               ['emitida', 'pagada'].includes(f.estado);
-      });
+      // Obtener facturas del año actual filtradas por el repositorio
+      const facturas: Factura[] = await facturaRepository.findByYearAndStatus(
+        currentYear,
+        ['emitida', 'pagada']
+      );
 
       // Calcular facturación anual
-      const facturacionAnual = facturasAnuales.reduce(
+      const facturacionAnual = facturas.reduce(
         (sum: number, f: Factura) => sum + f.total, 
         0
       );
@@ -120,13 +115,13 @@ class SIIServiceImpl implements SIIService {
       const umbralFacturacion = 6000000; // 6 millones de euros
 
       const requiereSII = (
-        facturasAnuales.length > umbralFacturas || 
+        facturas.length > umbralFacturas || 
         facturacionAnual > umbralFacturacion
       );
 
       return {
         requiereSII,
-        facturasAnuales: facturasAnuales.length,
+        facturasAnuales: facturas.length,
         facturacionAnual,
         umbralFacturas,
         umbralFacturacion
