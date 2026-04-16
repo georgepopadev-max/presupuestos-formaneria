@@ -1,6 +1,14 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import type { Presupuesto, LineaPresupuesto } from '../types';
-import { calculateSubtotal, calculateIVA, calculateTotal } from '../utils/validators';
+import { calculateSubtotal, calculateTotal } from '../utils/validators';
+import { IVA_TASAS } from '../utils/constants';
+
+// Mapping de tipoIva a tasa numérica
+const TIPO_IVA_MAP: Record<string, number> = {
+  general: IVA_TASAS.GENERAL,
+  reducido: IVA_TASAS.REDUCIDO,
+  super_reducido: IVA_TASAS.SUPER_REDUCIDO,
+};
 
 interface BudgetContextType {
   // Estado actual del presupuesto en edición
@@ -62,7 +70,10 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
 
   // Calcular totales
   const subtotal = calculateSubtotal(lineas);
-  const iva = calculateIVA(subtotal);
+  const iva = lineas.reduce((sum, l) => {
+    const tasa = TIPO_IVA_MAP[l.tipoIva] ?? IVA_TASAS.GENERAL;
+    return sum + (l.importe * tasa / 100);
+  }, 0);
   const total = calculateTotal(subtotal, iva);
 
   return (
