@@ -24,7 +24,10 @@ interface BudgetFormProps {
 /**
  * Formulario para crear o editar presupuestos
  */
-export function BudgetForm({ clientes, initialData, onSubmit, onCancel }: BudgetFormProps) {
+let lineIdCounter = Date.now();
+const generateLineId = () => ++lineIdCounter;
+
+const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit, onCancel }) => {
   const [clienteId, setClienteId] = useState(initialData?.clienteId || '');
   const [lineas, setLineas] = useState<LineaPresupuesto[]>(initialData?.lineas || []);
   const [estado, setEstado] = useState(initialData?.estado || 'borrador');
@@ -35,11 +38,12 @@ export function BudgetForm({ clientes, initialData, onSubmit, onCancel }: Budget
     { value: 'enviado', label: 'Enviado' },
     { value: 'aceptado', label: 'Aceptado' },
     { value: 'rechazado', label: 'Rechazado' },
+    { value: 'facturado', label: 'Facturado' },
   ];
 
   const handleAddLinea = () => {
     const nuevaLinea: LineaPresupuesto = {
-      id: crypto.randomUUID(),
+      id: generateLineId(),
       descripcion: '',
       cantidad: 1,
       precioUnitario: 0,
