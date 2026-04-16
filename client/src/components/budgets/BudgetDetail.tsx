@@ -1,8 +1,24 @@
 
-import type { Presupuesto } from '../../types';
+import type { Presupuesto, LineaPresupuesto } from '../../types';
 import { Button } from '../common/Button';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { PRESUPUESTO_ESTADOS_LABELS, ESTADO_COLORS, IVA_TASAS } from '../../utils/constants';
+
+// Mapping de tipoIva a tasa numérica
+const TIPO_IVA_MAP: Record<string, number> = {
+  general: IVA_TASAS.GENERAL,
+  reducido: IVA_TASAS.REDUCIDO,
+  super_reducido: IVA_TASAS.SUPER_REDUCIDO,
+};
+
+const getIvaLabel = (tipoIva: string): string => {
+  const rate = TIPO_IVA_MAP[tipoIva] ?? IVA_TASAS.GENERAL;
+  return `${rate}%`;
+};
+
+const getIvaRate = (tipoIva: string): number => {
+  return TIPO_IVA_MAP[tipoIva] ?? IVA_TASAS.GENERAL;
+};
 
 // Props para el componente BudgetDetail
 interface BudgetDetailProps {
@@ -23,6 +39,15 @@ export function BudgetDetail({
   onClone,
   onGenerateInvoice,
 }: BudgetDetailProps) {
+  // Calcular breakdown de IVA por tipo
+  const ivaBreakdown = (presupuesto.lineas ?? []).reduce<Record<string, number>>((acc, linea) => {
+    const rate = getIvaRate(linea.tipoIva);
+    const tipoKey = `${rate}%`;
+    const lineaIva = linea.importe * (rate / 100);
+    acc[tipoKey] = (acc[tipoKey] ?? 0) + lineaIva;
+    return acc;
+  }, {});
+
   return (
     <div className="bg-white rounded-lg shadow">
       {/* Header */}
@@ -48,7 +73,7 @@ export function BudgetDetail({
         <div>
           <p className="text-sm text-gray-500">Cliente</p>
           <p className="font-medium">{presupuesto.cliente?.nombre}</p>
-          <p className="text-sm text-gray-600">{presupuesto.cliente?.nif}</p>
+          <p className="text-sm text-gray-600">{presupuesto.cliente?.cif}</p>
         </div>
         <div>
           <p className="text-sm text-gray-500">Fecha de creación</p>
@@ -69,6 +94,7 @@ export function BudgetDetail({
               <th className="pb-2">Descripción</th>
               <th className="pb-2 text-right">Cantidad</th>
               <th className="pb-2 text-right">Precio ud.</th>
+              <th className="pb-2 text-right">IVA</th>
               <th className="pb-2 text-right">Importe</th>
             </tr>
           </thead>
@@ -78,6 +104,7 @@ export function BudgetDetail({
                 <td className="py-3">{linea.descripcion}</td>
                 <td className="py-3 text-right">{linea.cantidad}</td>
                 <td className="py-3 text-right">{formatCurrency(linea.precioUnitario)}</td>
+                <td className="py-3 text-right">{getIvaLabel(linea.tipoIva)}</td>
                 <td className="py-3 text-right font-medium">{formatCurrency(linea.importe)}</td>
               </tr>
             ))}
@@ -93,10 +120,12 @@ export function BudgetDetail({
               <span className="text-gray-600">Subtotal:</span>
               <span>{formatCurrency(presupuesto.subtotal)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">IVA ({IVA_TASAS.GENERAL}%):</span>
-              <span>{formatCurrency(presupuesto.iva)}</span>
-            </div>
+            {Object.entries(ivaBreakdown).map(([rate, ivaAmount]) => (
+              <div key={rate} className="flex justify-between">
+                <span className="text-gray-600">IVA ({rate}):</span>
+                <span>{formatCurrency(ivaAmount)}</span>
+              </div>
+            ))}
             <div className="flex justify-between text-lg font-bold border-t pt-2">
               <span>Total:</span>
               <span>{formatCurrency(presupuesto.total)}</span>
