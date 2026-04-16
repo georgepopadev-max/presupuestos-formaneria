@@ -309,7 +309,7 @@ export default function Budgets() {
           cantidad: Number(l.cantidad),
           precioUnitario: Number(l.precioUnitario),
           importe: Number(l.importe),
-          tipoIva: 'general',
+          tipoIva: l.tipoIva || 'general',
         })),
       };
 
