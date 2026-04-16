@@ -43,7 +43,7 @@ export interface LineaPresupuesto {
   precioUnitario: number;
   importe: number;
   materialId?: string;
-  tipoIva?: string;
+  tipoIva: string;
 }
 
 export interface Presupuesto {
@@ -69,6 +69,7 @@ export interface LineaFactura {
   cantidad: number;
   precioUnitario: number;
   importe: number;
+  tipoIva: string;
   presupuestoLineaId?: string;
 }
 
