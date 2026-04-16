@@ -5,7 +5,19 @@ import { InvoiceDetail } from '../components/invoices/InvoiceDetail';
 import { InvoiceForm } from '../components/invoices/InvoiceForm';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
+import { IVA_TASAS } from '../utils/constants';
 import type { Factura, Cliente, LineaFactura } from '../types';
+
+// Mapping de tipoIva a tasa numérica
+const TIPO_IVA_MAP: Record<string, number> = {
+  general: IVA_TASAS.GENERAL,
+  reducido: IVA_TASAS.REDUCIDO,
+  super_reducido: IVA_TASAS.SUPER_REDUCIDO,
+};
+
+const getIvaRate = (tipoIva: string): number => {
+  return TIPO_IVA_MAP[tipoIva] ?? IVA_TASAS.GENERAL;
+};
 
 /**
  * Página de Facturas
@@ -96,7 +108,10 @@ export default function Invoices() {
   }) => {
     // Calculate totals from lineas
     const subtotal = data.lineas.reduce((sum, l) => sum + (l.cantidad * l.precioUnitario), 0);
-    const iva = subtotal * 0.21; // IVA rate 21%
+    const iva = data.lineas.reduce((sum, l) => {
+      const rate = getIvaRate(l.tipoIva) / 100;
+      return sum + (l.cantidad * l.precioUnitario * rate);
+    }, 0);
     const total = subtotal + iva;
 
     if (editingFactura?.id) {
