@@ -12,12 +12,12 @@ export interface Cliente {
   email?: string;
   direccion?: string;
   ciudad?: string;
-  codigoPostal?: string;
+  codigo_postal?: string;
   nif?: string; // Número de Identificación Fiscal español
   observaciones?: string;
   activo: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 /**
@@ -30,13 +30,13 @@ export interface Proveedor {
   email?: string;
   direccion?: string;
   ciudad?: string;
-  codigoPostal?: string;
+  codigo_postal?: string;
   cif?: string; // CIF español
-  personaContacto?: string;
+  persona_contacto?: string;
   observaciones?: string;
   activo: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 /**
@@ -47,14 +47,14 @@ export interface Material {
   nombre: string;
   descripcion?: string;
   categoria?: string;
-  unidadMedida: string; // metros, unidades, kg, etc.
-  precioUnitario: number;
-  proveedorId?: number;
+  unidad_medida: string;
+  precio_unitario: number;
+  proveedor_id?: number;
   stock?: number;
-  stockMinimo?: number;
+  stock_minimo?: number;
   activo: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 /**

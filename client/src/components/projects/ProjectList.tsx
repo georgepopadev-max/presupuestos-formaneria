@@ -14,16 +14,18 @@ interface ProjectListProps {
  * Componente para listar proyectos en formato de tarjetas
  */
 export function ProjectList({ proyectos, onView }: ProjectListProps) {
+  const safeProyectos = Array.isArray(proyectos) ? proyectos : [];
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {proyectos.map((proyecto) => (
+      {safeProyectos.map((proyecto) => (
         <ProjectCard
           key={proyecto.id}
           proyecto={proyecto}
           onClick={() => onView(proyecto)}
         />
       ))}
-      {proyectos.length === 0 && (
+      {safeProyectos.length === 0 && (
         <p className="col-span-full text-center text-gray-500 py-8">
           No hay proyectos registrados
         </p>

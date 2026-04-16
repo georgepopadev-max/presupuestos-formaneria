@@ -28,7 +28,7 @@ export default function Suppliers() {
       setLoading(true);
       setError(null);
       const response = await proveedoresService.getAll();
-      setProveedores(response.data);
+      setProveedores(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('Error al cargar proveedores:', err);
       setError('Error al cargar la lista de proveedores');

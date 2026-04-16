@@ -48,7 +48,7 @@ export function BudgetDetail({
         <div>
           <p className="text-sm text-gray-500">Cliente</p>
           <p className="font-medium">{presupuesto.cliente?.nombre}</p>
-          <p className="text-sm text-gray-600">{presupuesto.cliente?.cif}</p>
+          <p className="text-sm text-gray-600">{presupuesto.cliente?.nif}</p>
         </div>
         <div>
           <p className="text-sm text-gray-500">Fecha de creación</p>
@@ -73,7 +73,7 @@ export function BudgetDetail({
             </tr>
           </thead>
           <tbody>
-            {presupuesto.lineas.map((linea) => (
+            {(Array.isArray(presupuesto.lineas) ? presupuesto.lineas : []).map((linea) => (
               <tr key={linea.id} className="border-b last:border-b-0">
                 <td className="py-3">{linea.descripcion}</td>
                 <td className="py-3 text-right">{linea.cantidad}</td>

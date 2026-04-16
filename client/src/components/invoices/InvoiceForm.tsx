@@ -76,7 +76,7 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
       {/* Selector de cliente */}
       <Select
         label="Cliente"
-        options={clientes.map(c => ({ value: c.id, label: c.nombre }))}
+        options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: c.id, label: c.nombre }))}
         value={clienteId}
         onChange={(e) => setClienteId(e.target.value)}
         placeholder="Seleccione un cliente"

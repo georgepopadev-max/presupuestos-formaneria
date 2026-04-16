@@ -26,6 +26,7 @@ export function Select({
   ...props
 }: SelectProps) {
   const selectId = id || props.name;
+  const safeOptions = Array.isArray(options) ? options : [];
   
   return (
     <div className="w-full">
@@ -56,7 +57,7 @@ export function Select({
             {placeholder}
           </option>
         )}
-        {options.map((option) => (
+        {safeOptions.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>

@@ -27,25 +27,25 @@ export function MaterialList({ materiales, onView, onEdit, onDelete }: MaterialL
       ),
     },
     {
-      key: 'precioUnitario',
+      key: 'precio_unitario',
       header: 'Precio',
       render: (row: Material) => (
-        <span className="font-medium">{formatCurrency(row.precioUnitario)}</span>
+        <span className="font-medium">{formatCurrency(row.precio_unitario)}</span>
       ),
     },
     {
-      key: 'unidad',
+      key: 'unidad_medida',
       header: 'Ud.',
       render: (row: Material) => (
-        <span className="text-gray-600">{row.unidad}</span>
+        <span className="text-gray-600">{row.unidad_medida}</span>
       ),
     },
     {
       key: 'stock',
       header: 'Stock',
       render: (row: Material) => (
-        <span className={row.stock < 10 ? 'text-red-600 font-medium' : ''}>
-          {row.stock}
+        <span className={(row.stock ?? 0) < 10 ? 'text-red-600 font-medium' : ''}>
+          {row.stock ?? 0}
         </span>
       ),
     },

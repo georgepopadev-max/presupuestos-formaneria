@@ -28,7 +28,7 @@ export default function Materials() {
       setLoading(true);
       setError(null);
       const response = await materialesService.getAll();
-      setMateriales(response.data);
+      setMateriales(Array.isArray(response.data) ? response.data : []);
     } catch (err: any) {
       console.error('Error cargando materiales:', err);
       setError(err.response?.data?.message || 'Error al cargar los materiales');
@@ -139,14 +139,14 @@ export default function Materials() {
         </div>
       ) : viewMode === 'list' ? (
         <MaterialList
-          materiales={materiales}
+          materiales={Array.isArray(materiales) ? materiales : []}
           onView={(m) => console.log('Ver material', m.nombre)}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {materiales.map((material) => (
+          {(Array.isArray(materiales) ? materiales : []).map((material) => (
             <MaterialCard
               key={material.id}
               material={material}

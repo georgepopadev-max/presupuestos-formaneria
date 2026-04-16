@@ -57,8 +57,8 @@ export default function Budgets() {
             presupuestosService.getAll(),
             clientesService.getAll(),
           ]).then(([retryPresupuestos, retryClientes]) => {
-            setPresupuestos(retryPresupuestos.data || []);
-            setClientes(retryClientes.data || []);
+            setPresupuestos(Array.isArray(retryPresupuestos.data) ? retryPresupuestos.data : []);
+            setClientes(Array.isArray(retryClientes.data) ? retryClientes.data : []);
           }).catch(() => {
             setError('No se pudieron cargar los presupuestos. Intenta recargar la página.');
           }).finally(() => setLoading(false));
@@ -67,11 +67,11 @@ export default function Budgets() {
       }
 
       // Service returns AxiosResponse<Presupuesto[]>, so .data is the array
-      const presupuestosData: Presupuesto[] = presupuestosRes.data;
-      const clientesData: Cliente[] = clientesRes.data;
+      const presupuestosData: Presupuesto[] = Array.isArray(presupuestosRes.data) ? presupuestosRes.data : [];
+      const clientesData: Cliente[] = Array.isArray(clientesRes.data) ? clientesRes.data : [];
       
-      setPresupuestos(presupuestosData || []);
-      setClientes(clientesData || []);
+      setPresupuestos(presupuestosData);
+      setClientes(clientesData);
       
       // If we have a selectedBudget, refresh its data
       if (selectedBudget) {
@@ -355,7 +355,7 @@ export default function Budgets() {
       
       {!loading && !error && (
         <BudgetList
-          presupuestos={presupuestos.map(enrichPresupuesto)}
+          presupuestos={(Array.isArray(presupuestos) ? presupuestos : []).map(enrichPresupuesto)}
           onView={handleView}
           onEdit={handleEdit}
           onDelete={handleDelete}
@@ -383,7 +383,7 @@ export default function Budgets() {
           <div className="grid grid-cols-2 gap-4">
             <Select
               label="Cliente"
-              options={clientes.map(c => ({ value: c.id, label: c.nombre }))}
+              options={(Array.isArray(clientes) ? clientes : []).map(c => ({ value: c.id, label: c.nombre }))}
               value={formData.clienteId}
               onChange={(e) => setFormData(prev => ({ ...prev, clienteId: e.target.value }))}
               placeholder="Seleccione un cliente"

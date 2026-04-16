@@ -23,8 +23,8 @@ import Register from './pages/Register';
 function App() {
   return (
     <AuthProvider>
-      <ErrorBoundary>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ErrorBoundary>
           <Routes>
           {/* Rutas públicas */}
           <Route path="/login" element={<Login />} />
@@ -117,8 +117,8 @@ function App() {
             />
           </Route>
         </Routes>
+        </ErrorBoundary>
       </BrowserRouter>
-      </ErrorBoundary>
     </AuthProvider>
   );
 }

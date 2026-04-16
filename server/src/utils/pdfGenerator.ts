@@ -90,7 +90,7 @@ export const generarPdfFactura = async (
       doc.fontSize(10).font('Helvetica');
       doc.text(cliente.nombre, 50, 185);
       if (cliente.direccion) doc.text(cliente.direccion, 50, 200);
-      if (cliente.ciudad) doc.text(`${cliente.ciudad} ${cliente.codigoPostal || ''}`, 50, 215);
+      if (cliente.ciudad) doc.text(`${cliente.ciudad} ${cliente.codigo_postal || ''}`, 50, 215);
       if (cliente.telefono) doc.text(`Tel: ${cliente.telefono}`, 50, 230);
       if (cliente.nif) doc.text(`NIF/CIF: ${cliente.nif}`, 50, 245);
 
@@ -204,7 +204,7 @@ export const generarPdfPresupuesto = async (
       doc.fontSize(10).font('Helvetica');
       doc.text(cliente.nombre, 50, 215);
       if (cliente.direccion) doc.text(cliente.direccion, 50, 230);
-      if (cliente.ciudad) doc.text(`${cliente.ciudad} ${cliente.codigoPostal || ''}`, 50, 245);
+      if (cliente.ciudad) doc.text(`${cliente.ciudad} ${cliente.codigo_postal || ''}`, 50, 245);
 
       // Tabla de líneas
       let yPosition = 290;

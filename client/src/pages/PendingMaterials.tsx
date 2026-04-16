@@ -26,8 +26,10 @@ export default function PendingMaterials() {
   const fetchPresupuestosAceptados = async () => {
     try {
       const res = await api.get('/presupuestos');
-      if (res.data.success) {
-        const aceptados = res.data.data.filter((p: any) => p.estado === 'aceptado');
+      const data = res.data;
+      const presupuestosArray = data?.success ? data.data : data;
+      if (Array.isArray(presupuestosArray)) {
+        const aceptados = presupuestosArray.filter((p: any) => p.estado === 'aceptado');
         setPresupuestos(aceptados);
       }
     } catch (err) {
@@ -40,9 +42,9 @@ export default function PendingMaterials() {
   const fetchPendientes = async (presupuestoId: number) => {
     try {
       const res = await api.get(`/materiales-pendientes/presupuesto/${presupuestoId}`);
-      if (res.data.success) {
-        setPendientes(res.data.data);
-      }
+      const data = res.data;
+      const pendientesArray = data?.success ? data.data : data;
+      setPendientes(Array.isArray(pendientesArray) ? pendientesArray : []);
     } catch (err) {
       console.error('Error fetching pendientes', err);
     }
@@ -51,9 +53,9 @@ export default function PendingMaterials() {
   const fetchResumen = async () => {
     try {
       const res = await api.get('/materiales-pendientes/resumen/proveedor');
-      if (res.data.success) {
-        setResumen(res.data.data);
-      }
+      const data = res.data;
+      const resumenArray = data?.success ? data.data : data;
+      setResumen(Array.isArray(resumenArray) ? resumenArray : []);
     } catch (err) {
       console.error('Error fetching resumen', err);
     }
@@ -114,7 +116,7 @@ export default function PendingMaterials() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Materiales Pendientes de Compra</h1>
 
       {/* Resumen por proveedor */}
-      {resumen.length > 0 && (
+      {Array.isArray(resumen) && resumen.length > 0 && (
         <Card className="mb-6">
           <h2 className="text-lg font-semibold mb-3">Resumen por Proveedor</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -139,7 +141,7 @@ export default function PendingMaterials() {
             onChange={(e) => setSelectedPresupuesto(e.target.value ? Number(e.target.value) : null)}
           >
             <option value="">-- Seleccionar presupuesto --</option>
-            {presupuestos.map((p: any) => (
+            {(Array.isArray(presupuestos) ? presupuestos : []).map((p: any) => (
               <option key={p.id} value={p.id}>
                 {p.numero} - {p.titulo}
               </option>
@@ -154,7 +156,7 @@ export default function PendingMaterials() {
       </Card>
 
       {/* Lista de materiales pendientes */}
-      {pendientes.length > 0 && (
+      {Array.isArray(pendientes) && pendientes.length > 0 && (
         <Card>
           <h2 className="text-lg font-semibold mb-3">Materiales Pendientes</h2>
           <table className="w-full">

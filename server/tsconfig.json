@@ -13,7 +13,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node10"
   },
   "include": ["src/**/*", "knexfile.ts"],
   "exclude": ["node_modules", "dist"]

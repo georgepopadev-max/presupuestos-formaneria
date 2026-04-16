@@ -23,11 +23,11 @@ const materialSchema = Joi.object({
   nombre: Joi.string().max(255).required(),
   descripcion: Joi.string().max(1000),
   categoria: Joi.string().max(100),
-  unidadMedida: Joi.string().max(20).required(),
-  precioUnitario: Joi.number().min(0).required(),
-  proveedorId: Joi.number().integer(),
+  unidad_medida: Joi.string().max(20).required(),
+  precio_unitario: Joi.number().min(0).required(),
+  proveedor_id: Joi.number().integer(),
   stock: Joi.number().integer().min(0),
-  stockMinimo: Joi.number().integer().min(0),
+  stock_minimo: Joi.number().integer().min(0),
 });
 
 // GET /api/materiales - Listar todos los materiales

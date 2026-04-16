@@ -31,7 +31,7 @@ export function InvoicePDFPreview({ factura }: InvoicePDFPreviewProps) {
       <div className="mb-8 p-4 bg-gray-50 rounded">
         <p className="text-sm text-gray-500 mb-1">Cliente:</p>
         <p className="font-medium text-lg">{factura.cliente?.nombre}</p>
-        <p className="text-gray-600">CIF: {factura.cliente?.cif}</p>
+        <p className="text-gray-600">CIF: {factura.cliente?.nif}</p>
         <p className="text-gray-600">{factura.cliente?.direccion}</p>
       </div>
 
@@ -46,7 +46,7 @@ export function InvoicePDFPreview({ factura }: InvoicePDFPreviewProps) {
           </tr>
         </thead>
         <tbody>
-          {factura.lineas.map((linea) => (
+          {(Array.isArray(factura.lineas) ? factura.lineas : []).map((linea) => (
             <tr key={linea.id} className="border-b border-gray-200">
               <td className="py-2">{linea.descripcion}</td>
               <td className="py-2 text-right">{linea.cantidad}</td>

@@ -25,6 +25,8 @@ export function Table<T extends { id?: string }>({
   emptyMessage = 'No hay datos disponibles',
   onRowClick,
 }: TableProps<T>) {
+  const safeData = Array.isArray(data) ? data : [];
+  
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -44,7 +46,7 @@ export function Table<T extends { id?: string }>({
         
         {/* Body */}
         <tbody className="bg-white divide-y divide-gray-200">
-          {data.length === 0 ? (
+          {safeData.length === 0 ? (
             <tr>
               <td 
                 colSpan={columns.length} 
@@ -54,7 +56,7 @@ export function Table<T extends { id?: string }>({
               </td>
             </tr>
           ) : (
-            data.map((row) => (
+            safeData.map((row) => (
               <tr
                 key={row.id || JSON.stringify(row)}
                 className={onRowClick ? 'hover:bg-gray-50 cursor-pointer' : ''}

@@ -47,7 +47,7 @@ export class MaterialService {
       ...data,
       activo: data.activo ?? true,
       stock: data.stock ?? 0,
-      stockMinimo: data.stockMinimo ?? 0,
+      stock_minimo: data.stock_minimo ?? 0,
     };
     return materialRepository.create(materialData);
   }
