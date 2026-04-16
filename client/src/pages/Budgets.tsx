@@ -300,9 +300,7 @@ export default function Budgets() {
           titulo: formData.titulo || 'Presupuesto sin título',
           estado: formData.estado,
           fechaValidez: formData.fechaValidez || undefined,
-          subtotal,
-          iva,
-          total,
+          // subtotal, iva, total se calculan en el servidor
         },
         lineas: formLineas.map(l => ({
           descripcion: l.descripcion,
