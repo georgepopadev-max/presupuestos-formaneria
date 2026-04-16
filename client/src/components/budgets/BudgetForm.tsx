@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { LineaPresupuesto, Cliente } from '../../types';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -34,6 +34,13 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
   const [lineas, setLineas] = useState<LineaPresupuesto[]>(initialData?.lineas || []);
   const [estado, setEstado] = useState(initialData?.estado || 'borrador');
   const [tipoIva, setTipoIva] = useState(initialData?.tipoIva || 'general');
+
+  // Actualizar tipoIva de todas las líneas cuando cambia el tipo global
+  useEffect(() => {
+    if (lineas.length > 0) {
+      setLineas(prev => prev.map(l => ({ ...l, tipoIva })));
+    }
+  }, [tipoIva]);
 
   // Estados de presupuesto
   const estadoOptions = [
