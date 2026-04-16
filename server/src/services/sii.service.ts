@@ -68,7 +68,9 @@ class SIIServiceImpl implements SIIService {
       const empresaDatos = {
         nombre: process.env.EMPRESA_NOMBRE || 'Fontanería Ejemplo SL',
         nif: process.env.EMPRESA_NIF || 'B12345678',
-        direccion: process.env.EMPRESA_DIRECCION || 'Calle Ejemplo, 123'
+        direccion: process.env.EMPRESA_DIRECCION || 'Calle Ejemplo, 123',
+        ciudad: process.env.EMPRESA_CIUDAD || 'Madrid',
+        codigoPostal: process.env.EMPRESA_CODIGO_POSTAL || '28001',
       };
 
       // Generar el XML Facturae

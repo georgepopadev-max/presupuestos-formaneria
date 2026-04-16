@@ -124,9 +124,9 @@ export const generarFacturaeXML = (
         <CorporateName>${escapeXml(emisor.nombre)}</CorporateName>
         <Address>
           <Address>${escapeXml(emisor.direccion)}</Address>
-          <PostCode>28001</PostCode>
-          <Town>Madrid</Town>
-          <Province>Madrid</Province>
+          <PostCode>${emisor.codigoPostal}</PostCode>
+          <Town>${escapeXml(emisor.ciudad)}</Town>
+          <Province>${escapeXml(emisor.ciudad)}</Province>
           <CountryCode>ES</CountryCode>
         </Address>
       </IndividualOrLegalEntity>
@@ -141,9 +141,9 @@ export const generarFacturaeXML = (
         <CorporateName>${escapeXml(receptor.nombre)}</CorporateName>
         <Address>
           <Address>${escapeXml(receptor.direccion)}</Address>
-          <PostCode>28001</PostCode>
-          <Town>Madrid</Town>
-          <Province>Madrid</Province>
+          <PostCode>${receptor.codigoPostal}</PostCode>
+          <Town>${escapeXml(receptor.ciudad)}</Town>
+          <Province>${escapeXml(receptor.ciudad)}</Province>
           <CountryCode>ES</CountryCode>
         </Address>
       </IndividualOrLegalEntity>
