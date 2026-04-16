@@ -38,8 +38,8 @@ export const generarFacturaeXML = (
     nombre: empresaDatos.nombre,
     nif: empresaDatos.nif,
     direccion: empresaDatos.direccion,
-    ciudad: empresaDatos.ciudad || 'Madrid',
-    codigoPostal: empresaDatos.codigoPostal || '28001',
+    ciudad: empresaDatos.ciudad || process.env.FACTURAE_DEFAULT_CIUDAD || 'Madrid',
+    codigoPostal: empresaDatos.codigoPostal || process.env.FACTURAE_DEFAULT_CP || '28001',
   };
 
   // Preparar datos del receptor (cliente)

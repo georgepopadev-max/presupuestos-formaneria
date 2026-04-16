@@ -259,12 +259,22 @@ export default function Budgets() {
     setFormLineas(prev => prev.filter((_, i) => i !== index));
   };
 
-  const calculateTotals = () => {
+  const { subtotal, iva, total, ivaPorcentaje } = useMemo(() => {
+    const tipoIvaMap: Record<string, number> = {
+      general: IVA_TASAS.GENERAL,
+      reducido: IVA_TASAS.REDUCIDO,
+      superreducido: IVA_TASAS.SUPER_REDUCIDO,
+      exento: 0,
+    };
     const subtotal = formLineas.reduce((sum, l) => sum + (l.importe || 0), 0);
-    const iva = subtotal * (IVA_TASAS.GENERAL / 100);
+    const iva = formLineas.reduce((sum, l) => {
+      const tasa = tipoIvaMap[l.tipoIva || 'general'] ?? IVA_TASAS.GENERAL;
+      return sum + (l.importe || 0) * (tasa / 100);
+    }, 0);
     const total = subtotal + iva;
-    return { subtotal, iva, total };
-  };
+    const ivaPorcentaje = subtotal > 0 ? Math.round((iva / subtotal) * 100) : IVA_TASAS.GENERAL;
+    return { subtotal, iva, total, ivaPorcentaje };
+  }, [formLineas]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -282,7 +292,7 @@ export default function Budgets() {
     setFormSubmitting(true);
     
     try {
-      const { subtotal, iva, total } = calculateTotals();
+      // subtotal, iva, total are from useMemo above
 
       const payload = {
         data: {
@@ -486,15 +496,15 @@ export default function Budgets() {
                 <div className="w-64 space-y-2 bg-gray-50 p-4 rounded-lg">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal:</span>
-                    <span>{calculateTotals().subtotal.toFixed(2)} €</span>
+                    <span>{subtotal.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">IVA ({IVA_TASAS.GENERAL}%):</span>
-                    <span>{calculateTotals().iva.toFixed(2)} €</span>
+                    <span className="text-gray-600">IVA ({ivaPorcentaje}%):</span>
+                    <span>{iva.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between font-bold border-t pt-2">
                     <span>Total:</span>
-                    <span>{calculateTotals().total.toFixed(2)} €</span>
+                    <span>{total.toFixed(2)} €</span>
                   </div>
                 </div>
               </div>
