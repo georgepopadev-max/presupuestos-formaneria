@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import type { LineaFactura, Cliente } from '../../types';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -29,13 +29,18 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
   const [clienteId, setClienteId] = useState(initialData?.clienteId || '');
   const [lineas, setLineas] = useState<LineaFactura[]>(initialData?.lineas || []);
   
-  // Fecha de vencimiento por defecto (30 días)
-  const defaultVencimiento = initialData?.fechaVencimiento || (() => {
+  // Fecha de vencimiento por defecto (30 días) — se recalcula si cambia initialData
+  const getDefaultVencimiento = () => {
+    if (initialData?.fechaVencimiento) return initialData.fechaVencimiento;
     const date = new Date();
     date.setDate(date.getDate() + 30);
     return date.toISOString().split('T')[0];
-  })();
-  const [fechaVencimiento, setFechaVencimiento] = useState(defaultVencimiento);
+  };
+  const [fechaVencimiento, setFechaVencimiento] = useState(getDefaultVencimiento);
+
+  useEffect(() => {
+    setFechaVencimiento(getDefaultVencimiento());
+  }, [initialData?.fechaVencimiento]);
 
   const handleAddLinea = () => {
     const nuevaLinea: LineaFactura = {

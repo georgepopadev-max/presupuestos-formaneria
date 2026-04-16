@@ -52,11 +52,13 @@ export const isValidCIF = (cif: string): boolean => {
 
 /**
  * Valida un número de teléfono español
+ * Acepta: +34XXXXXXXXX, 9XXXXXXXX, 6XXXXXXXX, 8XXXXXXXX (fijos provinciales)
+ * Formatos con espacios, paréntesis, guiones: +34 612 345 678, (+34) 912 345 678, etc.
  */
 export const isValidPhone = (phone: string): boolean => {
-  // Acepta formatos: +34XXXXXXXXX, 9XXXXXXXX, 6XXXXXXXX
-  const phoneRegex = /^(\+34)?[6-9][0-9]{8}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
+  const cleaned = phone.replace(/[\s\-\(\)]/g, '').replace(/^00/, '+');
+  const phoneRegex = /^(\+34)?[678][0-9]{8}$/;
+  return phoneRegex.test(cleaned);
 };
 
 /**

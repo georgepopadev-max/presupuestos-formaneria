@@ -1,6 +1,11 @@
 // ============================================================
 // GENERADOR DE NÚMEROS DE FACTURA Y PRESUPUESTO
 // Genera números secuenciales con formato predefinido
+//
+// NOTA: El control de concurrencia (locking) para la generación de números
+// secuenciales está DELEGADO al repositorio. La capa de aplicación (este archivo)
+// solo formatea el número. El repositorio usa transacciones con SELECT FOR UPDATE
+// para garantizar atomicidad en la obtención e incremento del secuencial.
 // ============================================================
 
 import { Secuencia } from '../types';

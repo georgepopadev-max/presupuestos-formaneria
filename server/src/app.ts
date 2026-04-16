@@ -33,10 +33,9 @@ app.use(cors({
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
-    // Allow any Vercel deployment for presupuestos-formaneria
-    if (/^https:\/\/presupuestos-formaneria.*\.vercel\.app$/.test(origin) ||
-        /^https:\/\/presupuestos-formaneria.*-vercel\.app$/.test(origin) ||
-        /^https:\/\/.+\.vercel\.app$/.test(origin)) {
+    // Allow specific Vercel deployments for presupuestos-formaneria only
+    if (/^https:\/\/presupuestos-formaneria\.vercel\.app$/.test(origin) ||
+        /^https:\/\/presupuestos-formaneria-[a-z0-9]+-vercel\.app$/.test(origin)) {
       return callback(null, true);
     }
     // Allow localhost for development
