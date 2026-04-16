@@ -68,7 +68,7 @@ export interface Proyecto {
   direccion?: string;
   ciudad?: string;
   presupuestoId?: number; // Presupuesto asociado
-  estado: 'pendiente' | 'en_progreso' | 'completado' | 'cancelado';
+  estado: 'pendiente' | 'en_progreso' | 'completado' | 'cancelado' | 'facturado';
   fechaInicio?: Date;
   fechaFin?: Date;
   observaciones?: string;
