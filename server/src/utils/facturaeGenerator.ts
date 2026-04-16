@@ -149,7 +149,7 @@ export const generarFacturaeXML = (
     <Invoice>
       <InvoiceHeader>
         <InvoiceNumber>${factura.numero}</InvoiceNumber>
-        <InvoiceSeriesCode>${factura.serie}</InvoiceSeriesCode>
+        <InvoiceSeriesCode>${factura.serie && factura.serie.trim() ? factura.serie : 'SERIE-UNICA'}</InvoiceSeriesCode>
         <InvoiceDocumentType>FC</InvoiceDocumentType> <!-- FC = Factura -->
         <InvoiceClass>OO</InvoiceClass> <!-- OO = Original -->
       </InvoiceHeader>

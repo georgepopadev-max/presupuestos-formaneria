@@ -9,12 +9,45 @@ export const isValidEmail = (email: string): boolean => {
 };
 
 /**
- * Valida un CIF/NIF español
+ * Valida un CIF/NIF español con checksum
+ * NIF: 8 dígitos + 1 letra (excluyendo vocales y XYZ)
+ * CIF: 1 letra + 7 números + 1 letra/dígito (algoritmo de control)
  */
 export const isValidCIF = (cif: string): boolean => {
-  // Formato básico: 8 números + 1 letra o 1 letra + 7 números + 1 letra
-  const cifRegex = /^[A-Z]{1}[0-9]{8}|[0-9]{8}[A-Z]{1}$/i;
-  return cifRegex.test(cif) && cif.length === 9;
+  const clean = cif.toUpperCase().trim();
+  if (clean.length !== 9) return false;
+
+  const nifRegex = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/i;
+  if (nifRegex.test(clean)) {
+    // NIF: validar letra de control
+    const numbers = parseInt(clean.slice(0, 8), 10);
+    const letter = clean[8].toUpperCase();
+    const controlLetters = 'TRWAGMYFPDXBNJZSQVHLCKET';
+    return letter === controlLetters[numbers % 23];
+  }
+
+  const cifRegex = /^[ABCDEFGHJPQRSUVNW][0-9]{7}[0-9A-J]$/i;
+  if (cifRegex.test(clean)) {
+    // CIF: algoritmo de control
+    const letters = 'JABCDEFGHI'.split('');
+    let sum = 0;
+    let isEven = false;
+    for (let i = 6; i >= 0; i--) {
+      let digit = parseInt(clean[i + 1], 10);
+      if (isEven) {
+        digit *= 2;
+        if (digit > 9) digit -= 9;
+      }
+      sum += digit;
+      isEven = !isEven;
+    }
+    const controlDigit = (10 - (sum % 10)) % 10;
+    const lastChar = clean[8].toUpperCase();
+    const expectedLetter = letters[(10 - (sum % 10)) % 10];
+    return lastChar === controlDigit.toString() || letters.includes(lastChar);
+  }
+
+  return false;
 };
 
 /**
