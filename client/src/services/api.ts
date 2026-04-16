@@ -48,9 +48,16 @@ api.interceptors.response.use(
           response.data = {};
         }
       }
-      // Si la respuesta tiene estructura { success, data } (backend wrapper), unwrapear
+      // Si la respuesta tiene estructura { success, data } (backend wrapper), unwrapear solo si success=true
       else if (response.data && typeof response.data === 'object' && 'data' in response.data) {
         const wrapper = response.data as any;
+        // IMPORTANTE: verificar success antes de unwrapper
+        if (wrapper.success === false) {
+          console.error('API returned success=false:', wrapper.error || wrapper.message);
+          const error = new Error(wrapper.error || wrapper.message || 'Request failed');
+          (error as any).response = response;
+          return Promise.reject(error);
+        }
         if (Array.isArray(wrapper.data)) {
           console.log('Unwrapping response data from {success,data} format');
           response.data = wrapper.data;
