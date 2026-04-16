@@ -45,6 +45,13 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
     setFechaVencimiento(getDefaultVencimiento());
   }, [initialData?.fechaVencimiento]);
 
+  // Actualizar tipoIva de todas las líneas cuando cambia el tipo global
+  useEffect(() => {
+    if (lineas.length > 0) {
+      setLineas(prev => prev.map(l => ({ ...l, tipoIva })));
+    }
+  }, [tipoIva]);
+
   const handleAddLinea = () => {
     const nuevaLinea: LineaFactura = {
       id: crypto.randomUUID(),
@@ -52,6 +59,7 @@ export function InvoiceForm({ clientes, presupuestoId, initialData, onSubmit, on
       cantidad: 1,
       precioUnitario: 0,
       importe: 0,
+      tipoIva,
     };
     setLineas([...lineas, nuevaLinea]);
   };
