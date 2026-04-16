@@ -14,11 +14,11 @@ export default function Projects() {
   // Datos de ejemplo
   const proyectos: Proyecto[] = [
     {
-      id: '1',
+      id: 1,
       nombre: 'Reforma baño piso 3º',
       descripcion: 'Instalación completa de baño en piso de 90m²',
       clienteId: 'c1',
-      cliente: { id: 'c1', nombre: 'María García', nif: '12345678A', direccion: 'Calle Mayor 5', telefono: '600123456', email: 'maria@email.es', createdAt: new Date() },
+      cliente: { id: 1, nombre: 'María García', cif: '12345678A', direccion: 'Calle Mayor 5', telefono: '600123456', email: 'maria@email.es', createdAt: new Date() },
       presupuestoIds: ['p1'],
       facturaIds: [],
       estado: 'en_progreso',
@@ -26,11 +26,11 @@ export default function Projects() {
       createdAt: new Date(Date.now() - 86400000 * 10),
     },
     {
-      id: '2',
+      id: 2,
       nombre: 'Instalación comunidad',
       descripcion: 'Sustitución de tuberías generales de la comunidad',
       clienteId: 'c2',
-      cliente: { id: 'c2', nombre: 'Comunidad Madrid 15', nif: 'H12345678', direccion: 'Avda Principal 15', telefono: '912345678', email: 'info@comunidad15.es', createdAt: new Date() },
+      cliente: { id: 2, nombre: 'Comunidad Madrid 15', cif: 'H12345678', direccion: 'Avda Principal 15', telefono: '912345678', email: 'info@comunidad15.es', createdAt: new Date() },
       presupuestoIds: ['p2', 'p3'],
       facturaIds: ['f1'],
       estado: 'planificado',
@@ -38,11 +38,11 @@ export default function Projects() {
       createdAt: new Date(),
     },
     {
-      id: '3',
+      id: 3,
       nombre: 'Avería urgencia/local',
       descripcion: 'Reparación inmediata de fuga en local comercial',
       clienteId: 'c3',
-      cliente: { id: 'c3', nombre: 'Bar El Cruce', nif: 'B87654321', direccion: 'Plaza España 3', telefono: '976123456', email: 'barcruce@mail.es', createdAt: new Date() },
+      cliente: { id: 3, nombre: 'Bar El Cruce', cif: 'B87654321', direccion: 'Plaza España 3', telefono: '976123456', email: 'barcruce@mail.es', createdAt: new Date() },
       presupuestoIds: [],
       facturaIds: ['f2', 'f3'],
       estado: 'completado',
