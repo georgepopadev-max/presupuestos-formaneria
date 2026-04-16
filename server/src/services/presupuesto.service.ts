@@ -124,6 +124,21 @@ export class PresupuestoService {
     const existing = await presupuestoRepository.findById(id);
     if (!existing) return null;
 
+    // Validar transición de estado si se está cambiando el estado
+    if (data.estado && data.estado !== existing.estado) {
+      const validTransitions: Record<string, string[]> = {
+        borrador: ['enviado'],
+        enviado: ['aceptado', 'rechazado', 'vencido'],
+        aceptado: [], // Terminal para presupuesto, se factura
+        rechazado: [], // Terminal
+        vencido: [],    // Terminal
+      };
+      const allowed = validTransitions[existing.estado] || [];
+      if (!allowed.includes(data.estado)) {
+        throw new Error(`Transición de estado inválida: ${existing.estado} → ${data.estado}`);
+      }
+    }
+
     let updateData = { ...data };
 
     // Si se proporcionan nuevas líneas, recalcular totales
