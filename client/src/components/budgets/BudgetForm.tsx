@@ -67,9 +67,22 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ clientes, initialData, onSubmit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validar cantidad > 0 y precioUnitario >= 0
+    for (const linea of lineas) {
+      if (linea.cantidad <= 0) {
+        alert('La cantidad debe ser mayor que 0');
+        return;
+      }
+      if (linea.precioUnitario < 0) {
+        alert('El precio unitario no puede ser negativo');
+        return;
+      }
+    }
+
     const fechaValidez = new Date();
     fechaValidez.setDate(fechaValidez.getDate() + 30);
-    
+
     onSubmit({
       clienteId,
       lineas,
