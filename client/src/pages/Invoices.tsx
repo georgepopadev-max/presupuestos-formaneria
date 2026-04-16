@@ -102,7 +102,7 @@ export default function Invoices() {
     if (editingFactura?.id) {
       // Update existing factura
       const updateData: Partial<Factura> = {
-        clienteId: data.clienteId,
+        clienteId: Number(data.clienteId),
         lineas: data.lineas,
         fechaVencimiento: new Date(data.fechaVencimiento),
         subtotal,
@@ -126,7 +126,7 @@ export default function Invoices() {
     } else {
       // Create new factura
       const createData = {
-        clienteId: data.clienteId,
+        clienteId: Number(data.clienteId),
         lineas: data.lineas,
         fechaVencimiento: new Date(data.fechaVencimiento),
         presupuestoId: data.presupuestoId,
