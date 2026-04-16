@@ -71,10 +71,22 @@ export const generarFacturaeXML = (
         <TotalCost>${linea.importe.toFixed(2)}</TotalCost>
         <TaxesOutputs>
           <Tax>
-            <TaxType>01</TaxType> <!-- 01 = IVA -->
-            <TaxRate>${factura.iva > 0 ? '21.00' : '0.00'}</TaxRate>
-            <TaxableBase>${linea.importe.toFixed(2)}</TaxableBase>
-            <TaxAmount>${((linea.importe * (factura.iva > 0 ? 0.21 : 0))).toFixed(2)}</TaxAmount>
+  // Mapear tipo de IVA a tasa y código de impuesto
+  const tipoIvaMap: Record<string, { tasa: number; taxType: string }> = {
+    'general': { tasa: 0.21, taxType: '01' },
+    'reducido': { tasa: 0.10, taxType: '01' },
+    'superreducido': { tasa: 0.04, taxType: '01' },
+    'exento': { tasa: 0, taxType: '01' },
+  };
+  const tipoIvaData = tipoIvaMap[linea.tipoIva || 'general'] || tipoIvaMap['general'];
+  const tipoIvaCode = linea.tipoIva || 'general';
+  const taxRate = tipoIvaData.tasa > 0 ? tipoIvaData.tasa.toFixed(2).replace('.', '') + '.' + tipoIvaData.tasa.toFixed(2).split('.')[1] : '0.00';
+  const taxAmount = (linea.importe * tipoIvaData.tasa).toFixed(2);
+`
+    <TaxType>${tipoIvaData.taxType}</TaxType>
+    <TaxRate>${taxRate}</TaxRate>
+    <TaxableBase>${linea.importe.toFixed(2)}</TaxableBase>
+    <TaxAmount>${taxAmount}</TaxAmount>`
           </Tax>
         </TaxesOutputs>
       </Item>
