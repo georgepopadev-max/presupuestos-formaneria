@@ -84,7 +84,7 @@ export const generarFacturaeXML = (
   };
   const tipoIvaData = tipoIvaMap[linea.tipoIva || 'general'] || tipoIvaMap['general'];
   const tipoIvaCode = linea.tipoIva || 'general';
-  const taxRate = tipoIvaData.tasa > 0 ? tipoIvaData.tasa.toFixed(2).replace('.', '') + '.' + tipoIvaData.tasa.toFixed(2).split('.')[1] : '0.00';
+  const taxRate = tipoIvaData.tasa > 0 ? (tipoIvaData.tasa * 100).toFixed(2) : '0.00';
   const taxAmount = (linea.importe * tipoIvaData.tasa).toFixed(2);
 `
     <TaxType>${tipoIvaData.taxType}</TaxType>
