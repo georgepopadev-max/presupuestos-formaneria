@@ -56,7 +56,7 @@ export interface Presupuesto {
   subtotal: number;
   iva: number;
   total: number;
-  estado: 'borrador' | 'enviado' | 'aceptado' | 'rechazado';
+  estado: 'borrador' | 'enviado' | 'aceptado' | 'rechazado' | 'facturado';
   fechaCreacion: Date;
   fechaValidez: Date;
   proyectoId?: string;
