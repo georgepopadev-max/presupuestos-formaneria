@@ -98,7 +98,7 @@ export default function Invoices() {
       // Update existing factura
       const updateData = {
         clienteId: Number(data.clienteId),
-        lineas: data.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, precioUnitario: l.precioUnitario, importe: l.importe, tipoIva: l.tipoIva })),
+        lineas: data.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, precioUnitario: l.precioUnitario, importe: l.importe, tipoIva: l.tipoIva as 'general' | 'reducido' | 'superreducido' | 'exento' })),
         fechaVencimiento: data.fechaVencimiento,
       };
       facturasService.update(editingFactura.id, updateData)
@@ -120,7 +120,7 @@ export default function Invoices() {
       const hoy = new Date().toISOString().split('T')[0];
       const createData = {
         clienteId: Number(data.clienteId),
-        lineas: data.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, precioUnitario: l.precioUnitario, importe: l.importe, tipoIva: l.tipoIva })),
+        lineas: data.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, precioUnitario: l.precioUnitario, importe: l.importe, tipoIva: l.tipoIva as 'general' | 'reducido' | 'superreducido' | 'exento' })),
         fechaVencimiento: data.fechaVencimiento,
         fechaEmision: hoy,
         estado: 'borrador' as const,
